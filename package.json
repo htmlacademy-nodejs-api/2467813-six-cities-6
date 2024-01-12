@@ -13,7 +13,7 @@
     "start": "npm run build && node ./dist/main.js",
     "build": "npm run clean && npm run compile",
     "dev": "npx ts-node ./src/main.ts",
-    "cli": "npx ts-node ./src/main.ts",
+    "cli": "npx ts-node ./src/main.cli.ts",
     "lint": "eslint src/ --ext .ts",
     "compile": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
