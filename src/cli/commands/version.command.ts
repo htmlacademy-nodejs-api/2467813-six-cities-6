@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ICommand } from './command.interface.js';
+import chalk from 'chalk';
 
 type TPackageJSONConfig = {
   version: string;
@@ -21,7 +22,7 @@ export class VersionCommand implements ICommand {
       throw new Error('Failed to parse json content.');
     }
 
-    return importedContent.version;
+    return chalk.green(importedContent.version);
   }
 
   public getName(): string {
