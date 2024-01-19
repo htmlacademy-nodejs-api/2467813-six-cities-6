@@ -18,17 +18,17 @@ async function bootstrap() {
     const normalizedModulePath = absoluteFilePath.split(sep).join('/');
 
     const commandModule = await import(normalizedModulePath);
-    const CommandClass = commandModule.default || Object.values(commandModule)[0];
 
-    if (typeof CommandClass === 'function') {
-      const commandInstance = new CommandClass();
+    Object.keys(commandModule).forEach((key) => {
+      const CommandClass = commandModule[key];
 
-      if (isICommand(commandInstance)) {
+      if (isICommand(CommandClass)) {
+        const commandInstance = new CommandClass();
         importedCommands.push(commandInstance);
       } else {
-        console.error('Объект не реализует интерфейс ICommand:', commandInstance);
+        console.error('Объект не реализует интерфейс ICommand:', CommandClass);
       }
-    }
+    });
   }
 
   cliApplication.registerCommands(importedCommands);
