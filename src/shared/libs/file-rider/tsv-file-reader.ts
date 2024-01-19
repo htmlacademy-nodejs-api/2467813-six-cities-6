@@ -1,3 +1,4 @@
+import { DECIMAL_SYSTEM, TRUE } from '../../const/index.js';
 import { TAmenitiesType, TCityType, THouseType, TRatingType, TUserData } from '../../types/index.js';
 import { TOffer } from '../../types/offer.type.js';
 import { IFileReader } from './file-reader.interface.js';
@@ -49,14 +50,14 @@ export class TSVFileReader implements IFileReader {
           city: city as TCityType,
           previewImage,
           listImages: listImages.split(',').map((el) => el.trim()),
-          isPremium: isPremium === 'true',
-          isFavorite: isFavorite === 'true',
-          rating: Number.parseInt(rating, 10) as TRatingType,
+          isPremium: isPremium === TRUE,
+          isFavorite: isFavorite === TRUE,
+          rating: Number.parseInt(rating, DECIMAL_SYSTEM) as TRatingType,
           houseType: houseType as THouseType,
-          rooms: Number.parseInt(rooms, 10),
-          guests: Number.parseInt(guests, 10),
-          rentalCost: Number.parseInt(rentalCost, 10),
-          amenities: amenities.split(',').map((el) => el.trim()) as TAmenitiesType[],
+          rooms: Number.parseInt(rooms, DECIMAL_SYSTEM),
+          guests: Number.parseInt(guests, DECIMAL_SYSTEM),
+          rentalCost: Number.parseInt(rentalCost, DECIMAL_SYSTEM),
+          amenities: amenities.split(',') as TAmenitiesType[],
           author: {
             name,
             email,

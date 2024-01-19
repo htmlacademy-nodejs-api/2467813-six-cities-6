@@ -2,14 +2,8 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ICommand } from './command.interface.js';
 import chalk from 'chalk';
-
-type TPackageJSONConfig = {
-  version: string;
-};
-
-function isPackageJSONConfig(value: unknown): value is TPackageJSONConfig {
-  return typeof value === 'object' && value !== null && !Array.isArray(value) && Object.hasOwn(value, 'version');
-}
+import { isPackageJSONConfig } from '../utils/index.js';
+import { COMMANDS } from '../const/index.js';
 
 export class VersionCommand implements ICommand {
   constructor(private readonly filePath: string = './package.json') {}
@@ -26,7 +20,7 @@ export class VersionCommand implements ICommand {
   }
 
   public getName(): string {
-    return '--version';
+    return COMMANDS.version;
   }
 
   public async execute(..._parameters: string[]): Promise<void> {

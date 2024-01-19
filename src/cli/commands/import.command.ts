@@ -1,11 +1,12 @@
 import { table } from '../../shared/config/index.js';
 import { TSVFileReader } from '../../shared/libs/file-rider/index.js';
 import { TOffer } from '../../shared/types/index.js';
+import { COMMANDS } from '../const/index.js';
 import { ICommand } from './command.interface.js';
 
 export class ImportCommand implements ICommand {
   public getName(): string {
-    return '--import';
+    return COMMANDS.import;
   }
 
   public execute(...parameters: string[]): void {
