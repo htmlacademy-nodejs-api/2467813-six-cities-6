@@ -4,3 +4,5 @@ export const COMMANDS = {
   import: '--import',
   generate: '--generate',
 } as const;
+
+export const PATH_COMMAND = './src/cli/commands/*.command.ts';

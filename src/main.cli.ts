@@ -5,12 +5,13 @@ import { ICommand } from './cli/commands/command.interface.js';
 import { CLIApplication } from './cli/index.js';
 import { glob } from 'glob';
 import { isICommand } from './cli/utils/index.js';
+import { PATH_COMMAND } from './cli/const/index.js';
 
 async function bootstrap() {
   const cliApplication = new CLIApplication();
 
   const importedCommands: ICommand[] = [];
-  const files = glob.sync('./src/cli/commands/*.command.ts');
+  const files = glob.sync(PATH_COMMAND);
 
   for (const file of files) {
     const absoluteFilePath = resolve(file);
