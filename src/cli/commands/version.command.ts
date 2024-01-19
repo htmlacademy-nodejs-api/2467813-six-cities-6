@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import { isPackageJSONConfig } from '../utils/index.js';
 import { COMMANDS } from '../const/index.js';
 
-export class VersionCommand implements ICommand {
+export default class VersionCommand implements ICommand {
   constructor(private readonly filePath: string = './package.json') {}
 
   private readVersion(): string {
