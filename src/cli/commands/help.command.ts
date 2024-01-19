@@ -2,7 +2,7 @@ import { COMMANDS } from '../const/index.js';
 import { ICommand } from './command.interface.js';
 import chalk from 'chalk';
 
-export default class HelpCommand implements ICommand {
+export class HelpCommand implements ICommand {
   public getName(): string {
     return COMMANDS.help;
   }

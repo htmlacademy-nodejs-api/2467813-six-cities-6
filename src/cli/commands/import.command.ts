@@ -4,7 +4,7 @@ import { TOffer } from '../../shared/types/index.js';
 import { COMMANDS } from '../const/index.js';
 import { ICommand } from './command.interface.js';
 
-export default class ImportCommand implements ICommand {
+export class ImportCommand implements ICommand {
   public getName(): string {
     return COMMANDS.import;
   }
