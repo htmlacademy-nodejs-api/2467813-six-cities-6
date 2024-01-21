@@ -1,5 +1,5 @@
 import { DECIMAL_SYSTEM, TRUE } from '../../const/index.js';
-import { TAmenitiesType, TCityType, THouseType, TRatingType, TUserData } from '../../types/index.js';
+import { TAmenitiesType, TCityType, THouseType, TUserData } from '../../types/index.js';
 import { TOffer } from '../../types/offer.type.js';
 import { IFileReader } from './file-reader.interface.js';
 import { readFileSync } from 'node:fs';
@@ -49,15 +49,15 @@ export class TSVFileReader implements IFileReader {
           publicationDate: new Date(publicationDate),
           city: city as TCityType,
           previewImage,
-          listImages: listImages.split(',').map((el) => el.trim()),
+          listImages: listImages.split(';').map((el) => el.trim()),
           isPremium: isPremium === TRUE,
           isFavorite: isFavorite === TRUE,
-          rating: Number.parseInt(rating, DECIMAL_SYSTEM) as TRatingType,
+          rating: Number.parseInt(rating, DECIMAL_SYSTEM),
           houseType: houseType as THouseType,
           rooms: Number.parseInt(rooms, DECIMAL_SYSTEM),
           guests: Number.parseInt(guests, DECIMAL_SYSTEM),
           rentalCost: Number.parseInt(rentalCost, DECIMAL_SYSTEM),
-          amenities: amenities.split(',') as TAmenitiesType[],
+          amenities: amenities.split(';') as TAmenitiesType[],
           author: {
             name,
             email,
@@ -65,8 +65,8 @@ export class TSVFileReader implements IFileReader {
             userType,
           } as TUserData,
           coordinates: {
-            latitude: Number(coordinate.split(',')[0]),
-            longitude: Number(coordinate.split(',')[1]),
+            latitude: Number(coordinate.split(';')[0]),
+            longitude: Number(coordinate.split(';')[1]),
           },
         }),
       );
