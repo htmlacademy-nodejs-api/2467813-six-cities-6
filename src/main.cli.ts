@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { ICommand } from './cli/commands/command.interface.js';
 import { CLIApplication } from './cli/index.js';
 import { glob } from 'glob';
-import { isICommand } from './cli/utils/index.js';
+import { isCommand } from './cli/utils/index.js';
 import { PATH_COMMAND } from './cli/const/index.js';
 
 async function bootstrap() {
@@ -22,7 +22,7 @@ async function bootstrap() {
     Object.keys(commandModule).forEach((key) => {
       const CommandClass = commandModule[key];
 
-      if (isICommand(CommandClass)) {
+      if (isCommand(CommandClass)) {
         const commandInstance = new CommandClass();
         importedCommands.push(commandInstance);
       } else {
