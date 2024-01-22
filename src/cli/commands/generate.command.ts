@@ -6,7 +6,7 @@ import { ICommand } from './command.interface.js';
 import { TSVOfferGenerator } from '../../shared/libs/offer-generator/index.js';
 import chalk from 'chalk';
 import { TSVFileWriter } from '../../shared/libs/file-writer/index.js';
-import { isErrorMessage } from '../../shared/utils/index.js';
+import { isError } from '../../shared/utils/index.js';
 
 export class GenerateCommand implements ICommand {
   private initialData: TMockServerData;
@@ -42,7 +42,7 @@ export class GenerateCommand implements ICommand {
 
       console.info(chalk.green(`File ${filepath} was created!`));
     } catch (error) {
-      if (isErrorMessage(error)) {
+      if (isError(error)) {
         console.error('Can`t generate data');
       } else {
         throw error;
