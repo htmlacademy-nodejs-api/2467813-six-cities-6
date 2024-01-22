@@ -1,11 +1,12 @@
 import got from 'got';
-import { appendFile } from 'node:fs/promises';
 import { DECIMAL_SYSTEM } from '../../shared/const/const.js';
 import { TMockServerData } from '../../shared/types/index.js';
 import { COMMANDS } from '../const/index.js';
 import { ICommand } from './command.interface.js';
 import { TSVOfferGenerator } from '../../shared/libs/offer-generator/index.js';
 import chalk from 'chalk';
+import { TSVFileWriter } from '../../shared/libs/file-writer/index.js';
+import { isErrorMessage } from '../../shared/utils/index.js';
 
 export class GenerateCommand implements ICommand {
   private initialData: TMockServerData;
@@ -20,8 +21,10 @@ export class GenerateCommand implements ICommand {
 
   private async write(filepath: string, offerCount: number) {
     const tsvOfferGenerator = new TSVOfferGenerator(this.initialData);
+    const tsvFileWriter = new TSVFileWriter(filepath);
+
     for (let i = 0; i < offerCount; i++) {
-      await appendFile(filepath, `${tsvOfferGenerator.generate()}\n`, { encoding: 'utf8' });
+      await tsvFileWriter.write(tsvOfferGenerator.generate());
     }
   }
 
@@ -38,11 +41,11 @@ export class GenerateCommand implements ICommand {
       await this.write(filepath, offerCount);
 
       console.info(chalk.green(`File ${filepath} was created!`));
-    } catch (error: unknown) {
-      console.error('Can`t generate data');
-
-      if (error instanceof Error) {
-        console.error(error.message);
+    } catch (error) {
+      if (isErrorMessage(error)) {
+        console.error('Can`t generate data');
+      } else {
+        throw error;
       }
     }
   }
