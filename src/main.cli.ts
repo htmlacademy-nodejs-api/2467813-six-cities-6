@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable node/no-unsupported-features/es-syntax */
-import { resolve, sep } from 'node:path';
+import { resolve } from 'node:path';
 import { ICommand } from './cli/commands/command.interface.js';
 import { CLIApplication } from './cli/index.js';
 import { glob } from 'glob';
@@ -15,7 +15,7 @@ async function bootstrap() {
 
   for (const file of files) {
     const absoluteFilePath = resolve(file);
-    const normalizedModulePath = absoluteFilePath.split(sep).join('/');
+    const normalizedModulePath = `file://${absoluteFilePath}`;
 
     const commandModule = await import(normalizedModulePath);
 
