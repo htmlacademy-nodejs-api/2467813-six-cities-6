@@ -52,7 +52,7 @@ export class TSVFileReader implements IFileReader {
           listImages: listImages.split(';').map((el) => el.trim()),
           isPremium: isPremium === TRUE,
           isFavorite: isFavorite === TRUE,
-          rating: Number.parseInt(rating, DECIMAL_SYSTEM),
+          rating: Number.parseFloat(rating),
           houseType: houseType as THouseType,
           rooms: Number.parseInt(rooms, DECIMAL_SYSTEM),
           guests: Number.parseInt(guests, DECIMAL_SYSTEM),

@@ -17,7 +17,7 @@ export type TOffer = {
   houseType: THouseType; // Тип жилья
   rooms: number; // Обязательное. Мин. 1, Макс. 8;
   guests: number; // Обязательное. Мин. 1, Макс. 10;
-  rentalCost: number; // Обязательное. Мин. 100, Макс. 100 000;ы
+  rentalCost: number; // Обязательное. Мин. 100, Макс. 100 000;
   amenities: TAmenitiesType[]; // Список удобств
   author: TUserData;
   coordinates: TCoordinate;

@@ -5,3 +5,4 @@ export * from './city.type.js';
 export * from './house.type.js';
 export * from './amenities.type.js';
 export * from './coordinate.type.js';
+export * from './mock-server-data.type.js';

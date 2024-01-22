@@ -24,7 +24,6 @@
       "Стильная квартира с оборудованной кухней и просторным балконом. Близость к торговым центрам и ресторанам.",
       "Загородный коттедж с частным озером, идеальное место для отдыха летом. Полностью меблирован и оборудован для комфортного проживания."
     ],
-    "cities": ["Paris", "Cologne", "Brussels", "Amsterdam", "Hamburg", "Dusseldorf"],
     "previewImage": ["https://placehold.co/50x50?text=PREVIEW"],
     "listImages": [
       "https://placehold.jp/ff9900/ffffff/150x150.png?text=HOUSING",
@@ -36,16 +35,6 @@
     ],
     "isPremium": [true, false],
     "isFavorite": [true, false],
-    "houseType": ["apartment", "house", "room", "hotel"],
-    "amenities": [
-      "Breakfast",
-      "Air conditioning",
-      "Laptop friendly workspace",
-      "Baby seat",
-      "Washer",
-      "Towels",
-      "Fridge"
-    ],
     "name": ["Иван", "Олег", "Михаил", "Анастасия", "Ярослав", "Джек", "Антон", "Борис", "Рокки", "Джон"],
     "emails": [
       "snow@pisem.local",
@@ -62,7 +51,6 @@
       "https://placehold.jp/ff9900/ffffff/50x50.png?text=AVATAR",
       "https://placehold.jp/4caf50/ffffff/50x50.png?text=AVATAR"
     ],
-    "userType": ["обычный", "pro"],
     "coordinates": [
       "48.85661;2.351499",
       "50.938361;6.959974",
