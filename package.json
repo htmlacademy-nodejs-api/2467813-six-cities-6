@@ -20,7 +20,8 @@
     "ts": "ts-node",
     "prettify": "prettier --write",
     "prettify:all": "prettier --write ./src",
-    "mock:server": "json-server ./mocks/mock-server-data.json --port 3123"
+    "mock:server": "json-server ./mocks/mock-server-data.json --port 3123",
+    "test:mock": "npm run cli -- --generate 100 ./mocks/test-data.tsv http://localhost:3123/api"
   },
   "devDependencies": {
     "@types/cli-table": "^0.3.4",
