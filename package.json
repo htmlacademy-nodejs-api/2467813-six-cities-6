@@ -19,7 +19,9 @@
     "clean": "rimraf dist",
     "ts": "ts-node",
     "prettify": "prettier --write",
-    "prettify:all": "prettier --write ./src"
+    "prettify:all": "prettier --write ./src",
+    "mock:server": "json-server ./mocks/mock-server-data.json --port 3123",
+    "test:mock": "npm run cli -- --generate 100 ./mocks/test-data.tsv http://localhost:3123/api"
   },
   "devDependencies": {
     "@types/cli-table": "^0.3.4",
@@ -30,9 +32,11 @@
     "eslint-config-htmlacademy": "9.1.1",
     "eslint-config-prettier": "6.15.0",
     "eslint-plugin-prettier": "4.2.1",
+    "json-server": "0.17.3",
     "prettier": "2.8.1",
     "rimraf": "5.0.1",
     "ts-node": "10.9.1",
+    "tslib": "2.6.2",
     "typescript": "5.2.2"
   },
   "type": "module",
@@ -42,6 +46,9 @@
   },
   "dependencies": {
     "chalk": "5.3.0",
-    "cli-table": "0.3.11"
+    "cli-table": "0.3.11",
+    "dayjs": "1.11.10",
+    "glob": "10.3.10",
+    "got": "13.0.0"
   }
 }
