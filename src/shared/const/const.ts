@@ -1,7 +1,8 @@
 export const DECIMAL_SYSTEM = 10;
 export const TRUE = 'true';
+export const FUNCTION = 'function';
 
-export const AMENITIES_TYPE = {
+export const AmenitiesType = {
   Breakfast: 'Breakfast',
   'Air conditioning': 'Air conditioning',
   'Laptop friendly workspace': 'Laptop friendly workspace',
@@ -11,7 +12,7 @@ export const AMENITIES_TYPE = {
   Fridge: 'Fridge',
 } as const;
 
-export const CITY_TYPE = {
+export const CityType = {
   Paris: 'Paris',
   Cologne: 'Cologne',
   Brussels: 'Brussels',
@@ -20,50 +21,50 @@ export const CITY_TYPE = {
   Dusseldorf: 'Dusseldorf',
 } as const;
 
-export const HOUSE_TYPE = {
+export const HouseType = {
   apartment: 'apartment',
   house: 'house',
   room: 'room',
   hotel: 'hotel',
 } as const;
 
-export const USER_TYPE = {
+export const UserType = {
   simple: 'обычный',
   pro: 'pro',
 } as const;
 
-export const GEOGRAPHICAL_COORDINATES = {
+export const GeographicalCoordinates = {
   Paris: '48.85661;2.351499',
   Cologne: '50.938361;6.959974',
   Brussels: '50.846557;4.351697',
   Amsterdam: '52.370216;4.895168',
   Hamburg: '53.550341;10.000654',
   Dusseldorf: '51.225402;6.776314',
-};
+} as const;
 
 export const LIST_CITIES = [
   {
-    name: CITY_TYPE.Paris,
-    coordinates: GEOGRAPHICAL_COORDINATES.Paris,
+    name: CityType.Paris,
+    coordinates: GeographicalCoordinates.Paris,
   },
   {
-    name: CITY_TYPE.Cologne,
-    coordinates: GEOGRAPHICAL_COORDINATES.Cologne,
+    name: CityType.Cologne,
+    coordinates: GeographicalCoordinates.Cologne,
   },
   {
-    name: CITY_TYPE.Brussels,
-    coordinates: GEOGRAPHICAL_COORDINATES.Brussels,
+    name: CityType.Brussels,
+    coordinates: GeographicalCoordinates.Brussels,
   },
   {
-    name: CITY_TYPE.Hamburg,
-    coordinates: GEOGRAPHICAL_COORDINATES.Hamburg,
+    name: CityType.Hamburg,
+    coordinates: GeographicalCoordinates.Hamburg,
   },
   {
-    name: CITY_TYPE.Amsterdam,
-    coordinates: GEOGRAPHICAL_COORDINATES.Amsterdam,
+    name: CityType.Amsterdam,
+    coordinates: GeographicalCoordinates.Amsterdam,
   },
   {
-    name: CITY_TYPE.Dusseldorf,
-    coordinates: GEOGRAPHICAL_COORDINATES.Dusseldorf,
+    name: CityType.Dusseldorf,
+    coordinates: GeographicalCoordinates.Dusseldorf,
   },
 ] as const;
