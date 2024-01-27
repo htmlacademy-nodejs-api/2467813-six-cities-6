@@ -4,7 +4,9 @@ import { getCurrentModuleDirectoryPath } from '../../utils/index.js';
 import { resolve } from 'node:path';
 import { LOG_FILE_PATH } from '../../const/index.js';
 import { rimraf } from 'rimraf';
+import { injectable } from 'inversify';
 
+@injectable()
 export class PinoLogger implements ILogger {
   private readonly logger: PinoInstance;
 
@@ -35,6 +37,7 @@ export class PinoLogger implements ILogger {
       },
       multiTransport,
     );
+    this.logger.info('PinoLogger created...');
   }
 
   public debug(message: string, ...args: unknown[]): void {

@@ -3,6 +3,12 @@ export const TRUE = 'true';
 export const FUNCTION = 'function';
 export const LOG_FILE_PATH = 'logs/rest.log';
 
+export const Component = {
+  RestApplication: Symbol.for('RestApplication'),
+  Logger: Symbol.for('Logger'),
+  Config: Symbol.for('Config'),
+} as const;
+
 export const AmenitiesType = {
   Breakfast: 'Breakfast',
   'Air conditioning': 'Air conditioning',
@@ -43,7 +49,7 @@ export const GeographicalCoordinates = {
   Dusseldorf: '51.225402;6.776314',
 } as const;
 
-export const LIST_CITIES = [
+export const ListCities = [
   {
     name: CityType.Paris,
     coordinates: GeographicalCoordinates.Paris,
