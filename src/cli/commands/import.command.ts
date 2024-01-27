@@ -1,10 +1,10 @@
 import chalk from 'chalk';
-import { table } from '../../shared/config/index.js';
 import { TSVFileReader } from '../../shared/libs/file-rider/index.js';
 import { TOffer } from '../../shared/types/index.js';
 import { createOffer, isError } from '../../shared/utils/index.js';
 import { COMMANDS } from '../const/index.js';
 import { ICommand } from './command.interface.js';
+import { table } from '../config/index.js';
 
 export class ImportCommand implements ICommand {
   private listOffers: TOffer[] = [];
