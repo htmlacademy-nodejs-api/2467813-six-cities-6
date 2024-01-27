@@ -1,6 +1,7 @@
 export const DECIMAL_SYSTEM = 10;
 export const TRUE = 'true';
 export const FUNCTION = 'function';
+export const LOG_FILE_PATH = 'logs/rest.log';
 
 export const AmenitiesType = {
   Breakfast: 'Breakfast',

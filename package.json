@@ -10,10 +10,10 @@
   ],
   "main": "main.js",
   "scripts": {
-    "start": "npm run build && node ./dist/main.js",
+    "start": "npm run build && node ./dist/main.rest.js",
     "build": "npm run clean && npm run compile",
-    "dev": "npx ts-node ./src/main.ts",
-    "cli": "npx ts-node ./src/main.cli.ts",
+    "dev": "npm run ts ./src/main.rest.ts | pino-pretty --colorize --translateTime SYS:standard",
+    "cli": "npm run ts ./src/main.cli.ts",
     "lint": "eslint src/ --ext .ts",
     "compile": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
@@ -33,6 +33,7 @@
     "eslint-config-prettier": "6.15.0",
     "eslint-plugin-prettier": "4.2.1",
     "json-server": "0.17.3",
+    "pino-pretty": "10.2.0",
     "prettier": "2.8.1",
     "rimraf": "5.0.1",
     "ts-node": "10.9.1",
@@ -49,6 +50,7 @@
     "cli-table": "0.3.11",
     "dayjs": "1.11.10",
     "glob": "10.3.10",
-    "got": "13.0.0"
+    "got": "13.0.0",
+    "pino": "8.15.1"
   }
 }
