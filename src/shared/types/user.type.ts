@@ -1,6 +1,6 @@
 import { TUserType } from './user-type.type.js';
 
-export type TUser = {
+type TUser = {
   name: string; // Обязательное. Мин. длина 1 символ, макс. длина 15 символов;
   email: string; // Обязательное. Валидный адрес электронной почты;
   avatarPath?: string | null; // Необязательное. Изображение пользователя в формате .jpg или .png;
