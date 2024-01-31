@@ -25,7 +25,7 @@ export const configRestSchema = convict<TRestSchema>({
   DB_MONGO_HOST: {
     doc: 'IP address of the database server (MongoDB)',
     format: 'ipaddress',
-    env: 'DB_HOST',
+    env: 'DB_MONGO_HOST',
     default: '127.0.0.1',
   },
 });
