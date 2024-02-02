@@ -154,6 +154,7 @@ DB_MONGO_HOST=value - IP-адрес сервера базы данных (MongoD
 DB_MONGO_USER=value - Имя пользователя в базе данных (MongoDB)
 DB_MONGO_PASSWORD=value - Пароль пользователя в базе данных (MongoDB)
 DB_MONGO_PORT=value - Порт пользователя в базе данных (MongoDB)
+DB_MONGO_NAME=value - Название базы данных (MongoDB)
 ```
 
 ### Остальное
