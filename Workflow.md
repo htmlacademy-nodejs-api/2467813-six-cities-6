@@ -118,6 +118,18 @@ npm run test:mock
 Создает моковый файл в `./mocks/test-data.tsv` и генерирует 100 записей.
 Перед этим убедитесь что у вас запущен JSON-сервер
 
+#### Локальный запуск базы данных MongoDB
+
+Для запуска база данных у вас на машине должен быть установлен docker и заполненный файл `.env`
+
+```bash
+docker compose \
+--file ./docker-compose.dev.yml \
+--env-file ./.env \
+--project-name "six_cities" \
+up \
+```
+
 ## Структура проекта
 
 ### Директория `src`
@@ -137,7 +149,11 @@ npm run test:mock
 ```bash
 PORT=value - Порт для входящих подключений
 SALT=value - Соль для хэша пароля
+
 DB_MONGO_HOST=value - IP-адрес сервера базы данных (MongoDB)
+DB_MONGO_USER=value - Имя пользователя в базе данных (MongoDB)
+DB_MONGO_PASSWORD=value - Пароль пользователя в базе данных (MongoDB)
+DB_MONGO_PORT=value - Порт пользователя в базе данных (MongoDB)
 ```
 
 ### Остальное
