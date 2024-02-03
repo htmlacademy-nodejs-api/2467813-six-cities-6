@@ -17,8 +17,8 @@ export class UserEntity extends defaultClasses.TimeStamps implements TUser {
     type: String,
     required: true,
     trim: true,
-    minlength: [1, 'Min length for avatar path is 1'],
-    maxlength: [15, 'Min length for avatar path is 15'],
+    minlength: [1, 'Min length for name path is 1'],
+    maxlength: [15, 'Max length for name path is 15'],
   })
   public name: string;
 
@@ -35,7 +35,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements TUser {
     type: String,
     required: false,
     trim: true,
-    match: [/\.(jpg|png)(\?.*)?$/i, 'The user`s image must include an extension.jpg or .png'],
+    match: [/\.(jpg|png)(\?.*)?$/i, 'The user`s image must include an extension .jpg or .png'],
     default: 'https://placehold.jp/673ab7/ffffff/50x50.png?text=AVATAR',
   })
   public avatarPath?: string;
