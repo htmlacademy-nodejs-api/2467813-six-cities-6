@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { isError } from '../../utils/index.js';
 import { ILogger } from './index.js';
 
@@ -7,10 +8,10 @@ export class ConsoleLogger implements ILogger {
   }
 
   public error(message: string, error: Error, ...args: unknown[]): void {
-    console.error(message, ...args);
+    console.error(chalk.red(message), ...args);
 
     if (isError(error)) {
-      console.error(`Error message: ${error.message}`);
+      console.error(`${chalk.red('Error message:')} ${error.message}`);
     }
   }
 
@@ -19,6 +20,6 @@ export class ConsoleLogger implements ILogger {
   }
 
   public warn(message: string, ...args: unknown[]): void {
-    console.warn(message, ...args);
+    console.warn(chalk.yellow(message), ...args);
   }
 }

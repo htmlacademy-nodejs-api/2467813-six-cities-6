@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-import { Ref, defaultClasses, getModelForClass, modelOptions, prop } from '@typegoose/typegoose';
+import { Ref, defaultClasses, getModelForClass, modelOptions, mongoose, prop } from '@typegoose/typegoose';
 import { TAmenitiesType } from '../../types/amenities.type.js';
 import { TCityType } from '../../types/city.type.js';
 import { THouseType } from '../../types/house.type.js';
@@ -65,7 +65,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   public previewImage: string;
 
   @prop({
-    type: Array,
+    type: String,
     required: true,
     // validate: {
     //   validator: function (v: string) {
@@ -75,7 +75,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     // },
     default: [],
   })
-  public listImages: string[];
+  public listImages: mongoose.Types.Array<string>;
 
   @prop({
     type: Boolean,
@@ -130,7 +130,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   public rentalCost: number;
 
   @prop({
-    type: Array<TAmenitiesType>,
+    type: String,
     required: true,
     // validate: {
     //   validator: function (v: string) {
@@ -140,14 +140,19 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     // },
     default: [],
   })
-  public amenities: TAmenitiesType[];
+  public amenities: mongoose.Types.Array<TAmenitiesType>;
 
   @prop({
-    type: String,
-    trim: true,
+    type: Number,
     required: true,
   })
-  public coordinates: string;
+  public latitude: number;
+
+  @prop({
+    type: Number,
+    required: true,
+  })
+  public longitude: number;
 
   @prop({
     ref: UserEntity,

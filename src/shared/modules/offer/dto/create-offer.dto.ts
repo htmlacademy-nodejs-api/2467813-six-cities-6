@@ -15,6 +15,7 @@ export class CreateOfferDto {
   public guests: number;
   public rentalCost: number;
   public amenities: TAmenitiesType[];
-  public coordinates: string;
+  public latitude: number;
+  public longitude: number;
   public userId: string;
 }

@@ -13,8 +13,8 @@
   "scripts": {
     "start": "npm run build && node ./dist/main.rest.js",
     "build": "npm run clean && npm run compile",
-    "dev": "npm run ts ./src/main.rest.ts | pino-pretty --colorize --translateTime SYS:standard",
-    "cli": "npm run ts ./src/main.cli.ts",
+    "dev": "npx ts-node ./src/main.rest.ts | pino-pretty --colorize --translateTime SYS:standard",
+    "cli": "npx ts-node ./src/main.cli.ts",
     "lint": "eslint src/ --ext .ts",
     "compile": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
