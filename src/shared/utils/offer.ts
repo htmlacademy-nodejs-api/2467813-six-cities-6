@@ -1,5 +1,5 @@
 import { DECIMAL_SYSTEM, TRUE } from '../const/index.js';
-import { TAmenitiesType, TCityType, THouseType, TOffer, TUserData } from '../types/index.js';
+import { TAmenitiesType, TCityType, THouseType, TOffer, TUser } from '../types/index.js';
 
 export function createOffer(offerData: string): TOffer {
   const [
@@ -29,7 +29,7 @@ export function createOffer(offerData: string): TOffer {
     email,
     avatarPath,
     userType,
-  } as TUserData;
+  } as TUser;
 
   const coordinates = {
     latitude: Number(coordinate.split(';')[0]),

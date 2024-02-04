@@ -2,7 +2,7 @@ import { TAmenitiesType } from './amenities.type.js';
 import { TCityType } from './city.type.js';
 import { TCoordinate } from './coordinate.type.js';
 import { THouseType } from './house.type.js';
-import { TUserData } from './user.type.js';
+import { TUser } from './user.type.js';
 
 export type TOffer = {
   title: string; // Обязательное. Мин. длин 10 символов, макс. длина 100;
@@ -19,7 +19,7 @@ export type TOffer = {
   guests: number; // Обязательное. Мин. 1, Макс. 10;
   rentalCost: number; // Обязательное. Мин. 100, Макс. 100 000;
   amenities: TAmenitiesType[]; // Список удобств
-  author: TUserData;
+  author: TUser;
   coordinates: TCoordinate;
   // FIXME: ПОПРАВИТЬ КОММЕНТАРИЙ
   // Количество комментариев. Рассчитывается автоматически;
