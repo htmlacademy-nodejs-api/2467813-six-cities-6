@@ -46,10 +46,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/user'
-
         '409':
           description: Пользователь с таким email уже существует.
-
         '400':
           description: Не удается создать пользователя.
 
@@ -77,7 +75,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/token'
-
         '401':
           description: Логин или пароль неверный или пользователь не существует.
 
@@ -103,7 +100,6 @@ paths:
             application/json:
               schema:
                 type: object
-
         '401':
           description: Токен недействителен или срок его действия истек.
 
@@ -130,7 +126,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/user'
-
         '401':
           description: Токен недействителен или срок его действия истек.
 
@@ -146,11 +141,6 @@ paths:
         Для запроса комментариев к определённому предложению сервис предоставляет отдельный ресурс.
         Список предложений по аренде могут запрашивать анонимные и авторизованные клиенты.
       parameters:
-        - name: token
-          in: header
-          description: 'Token (формат: JWT + "token")'
-          schema:
-            type: string
         - name: limit
           in: query
           description: limit
@@ -195,7 +185,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/offer'
-
         '401':
           description: Токен недействителен или срок его действия истек.
 
@@ -207,13 +196,7 @@ paths:
       description: Детальная информация по предложению.
         Детальная информация по предложению включает сведения о количестве комментариев. Сами комментарии не включены.
         Детальную информацию по предложению могут запрашивать авторизованные и анонимные клиенты.
-      parameters:
-        - name: token
-          in: header
-          description: 'Token (формат: JWT + "token")'
-          required: true
-          schema:
-            type: string
+
       responses:
         '200':
           description: Список предложений по аренде.
@@ -253,7 +236,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/offer'
-
         '401':
           description: Токен недействителен или срок его действия истек.
 
@@ -274,12 +256,11 @@ paths:
 
       responses:
         '204':
-          description: Cервис завершает пользовательский сеанс (сессию).
+          description: Удаление предложения по аренде.
           content:
             application/json:
               schema:
                 type: object
-
         '401':
           description: Токен недействителен или срок его действия истек.
 
@@ -294,11 +275,6 @@ paths:
         Список возвращаемых предложений отсортирован по дате публикации (по убыванию).
         Ресурс доступен авторизованным и анонимным клиентам.
       parameters:
-        - name: token
-          in: header
-          description: 'Token (формат: JWT + "token")'
-          schema:
-            type: string
         - name: limit
           in: query
           description: limit
@@ -340,6 +316,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/offer'
+        '401':
+          description: Токен недействителен или срок его действия истек.
 
   /offers/{offer_id}/favorite/:
     put:
@@ -376,6 +354,8 @@ paths:
             application/json:
               schema:
                 type: object
+        '401':
+          description: Токен недействителен или срок его действия истек.
 
   # COMMENTS
   /comments/{offer_id}/:
@@ -387,12 +367,7 @@ paths:
         Сервис всегда возвращает список из 50 (или меньше) последних комментариев.
         Комментарии отсортированы по дате публикации (по убыванию). Сначала новые, потом старые.
         Комментарии могут запрашивать авторизованные и анонимные клиенты.
-      parameters:
-        - name: token
-          in: header
-          description: 'Token (формат: JWT + "token")'
-          schema:
-            type: string
+
       responses:
         '200':
           description: Список комментариев для предложения.
@@ -434,6 +409,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/comment'
+        '401':
+          description: Токен недействителен или срок его действия истек.
+
 # COMPONENTS
 components:
   schemas:
