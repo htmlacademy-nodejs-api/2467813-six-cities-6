@@ -3,6 +3,7 @@ import { CreateUserDto, IUserService, UserEntity } from './index.js';
 import { inject, injectable } from 'inversify';
 import { ILogger } from '../../libs/logger/index.js';
 import { Component } from '../../const/index.js';
+import { UpdateUserDto } from './dto/update-user.dto.js';
 
 @injectable()
 export class DefaultUserService implements IUserService {
@@ -27,7 +28,7 @@ export class DefaultUserService implements IUserService {
   }
 
   public async findByEmail(email: string): Promise<DocumentType<UserEntity> | null> {
-    return this.userModel.findOne({ email });
+    return this.userModel.findOne({ email }).exec();
   }
 
   public async findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
@@ -38,5 +39,9 @@ export class DefaultUserService implements IUserService {
     }
 
     return this.create(dto, salt);
+  }
+
+  public async updateById(userId: string, dto: UpdateUserDto): Promise<DocumentType<UserEntity> | null> {
+    return this.userModel.findByIdAndUpdate(userId, dto, { new: true }).exec();
   }
 }
