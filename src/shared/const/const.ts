@@ -80,3 +80,8 @@ export const ListCities = [
     coordinates: GeographicalCoordinates.Dusseldorf,
   },
 ] as const;
+
+export const SortTypeMongoDB = {
+  Down: -1,
+  Up: 1,
+} as const;

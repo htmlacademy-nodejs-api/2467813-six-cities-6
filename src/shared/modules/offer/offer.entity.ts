@@ -67,12 +67,6 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({
     type: String,
     required: true,
-    // validate: {
-    //   validator: function (v: string) {
-    //     return /\.(jpg|png)(\?.*)?$/i.test(v);
-    //   },
-    //   message: (props) => `${props.value} Photos of housing must contain the extension format .jpg or .png`,
-    // },
     default: [],
   })
   public listImages: mongoose.Types.Array<string>;
@@ -132,12 +126,6 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({
     type: String,
     required: true,
-    // validate: {
-    //   validator: function (v: string) {
-    //     return /\.(jpg|png)(\?.*)?$/i.test(v);
-    //   },
-    //   message: (props) => `${props.value} Photos of housing must contain the extension format .jpg or .png`,
-    // },
     default: [],
   })
   public amenities: mongoose.Types.Array<TAmenitiesType>;
@@ -153,6 +141,11 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     required: true,
   })
   public longitude: number;
+
+  @prop({
+    default: 0,
+  })
+  public commentCount: number;
 
   @prop({
     ref: UserEntity,
