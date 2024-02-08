@@ -6,7 +6,7 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { CreateOfferDto, OfferEntity } from './index.js';
 import { DEFAULT_OFFER_COUNT, DEFAULT_OFFER_PREMIUM_COUNT } from './const/index.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
-// TSortTypeMongo
+
 @injectable()
 export class DefaultOfferService implements IOfferService {
   constructor(
@@ -25,8 +25,6 @@ export class DefaultOfferService implements IOfferService {
   }
 
   public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    // FIXME: При удалении объявления, комментарии к объявлению удаляются автоматически.
-    // Возможно надо сделать агрегацию и добавить коллекцию комментариев
     return this.offerModel.findByIdAndDelete(offerId).exec();
   }
 
