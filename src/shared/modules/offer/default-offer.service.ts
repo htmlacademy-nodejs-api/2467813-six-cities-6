@@ -6,6 +6,7 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { CreateOfferDto, OfferEntity } from './index.js';
 import { DEFAULT_OFFER_COUNT, DEFAULT_OFFER_PREMIUM_COUNT } from './const/index.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
+import { Types } from 'mongoose';
 
 @injectable()
 export class DefaultOfferService implements IOfferService {
@@ -29,12 +30,72 @@ export class DefaultOfferService implements IOfferService {
   }
 
   public async find(count?: number): Promise<DocumentType<OfferEntity>[]> {
+    // return this.offerModel.find().sort({ createdAt: SortTypeMongoDB.Down }).limit(limit).populate(['userId']).exec();
     const limit = count ?? DEFAULT_OFFER_COUNT;
-    return this.offerModel.find().sort({ createdAt: SortTypeMongoDB.Down }).limit(limit).populate(['userId']).exec();
+    return this.offerModel
+      .aggregate([
+        {
+          $lookup: {
+            from: 'comments',
+            localField: '_id',
+            foreignField: 'offerId',
+            as: 'comments',
+          },
+        },
+        {
+          $addFields: {
+            commentCount: { $size: '$comments' },
+            totalRating: { $sum: '$comments.rating' },
+          },
+        },
+        {
+          $addFields: {
+            rating: {
+              $cond: {
+                if: { $gt: ['$commentCount', 0] },
+                then: { $divide: ['$totalRating', '$commentCount'] },
+                else: 0,
+              },
+            },
+          },
+        },
+        { $unset: ['comments', 'totalRating'] },
+        { $sort: { createdAt: SortTypeMongoDB.Down } },
+        { $limit: limit },
+      ])
+      .exec();
   }
 
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel.findById(offerId).populate(['userId']).exec();
+    // return this.offerModel.findById(offerId).populate(['userId']).exec();
+    const aggregationResult = await this.offerModel
+      .aggregate([
+        { $match: { _id: new Types.ObjectId(offerId) } },
+        {
+          $lookup: {
+            from: 'comments',
+            localField: '_id',
+            foreignField: 'offerId',
+            as: 'comments',
+          },
+        },
+        {
+          $addFields: {
+            commentCount: { $size: '$comments' },
+            //
+            totalRating: { $sum: '$comments.rating' },
+          },
+        },
+        {
+          $addFields: {
+            rating: { $divide: ['$totalRating', '$commentCount'] },
+          },
+        },
+        { $unset: ['comments', 'totalRating'] },
+      ])
+      .exec();
+
+    return aggregationResult.length > 0 ? aggregationResult[0] : null;
   }
 
   public async findPremium(count?: number): Promise<DocumentType<OfferEntity>[]> {
