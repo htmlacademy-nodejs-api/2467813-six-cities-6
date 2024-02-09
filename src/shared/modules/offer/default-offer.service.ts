@@ -53,8 +53,8 @@ export class DefaultOfferService implements IOfferService {
             rating: {
               $cond: {
                 if: { $gt: ['$commentCount', 0] },
-                then: { $divide: ['$totalRating', '$commentCount'] },
                 else: 0,
+                then: { $divide: ['$totalRating', '$commentCount'] },
               },
             },
           },
@@ -88,7 +88,13 @@ export class DefaultOfferService implements IOfferService {
         },
         {
           $addFields: {
-            rating: { $divide: ['$totalRating', '$commentCount'] },
+            rating: {
+              $cond: {
+                if: { $eq: ['$commentCount', 0] },
+                then: 0,
+                else: { $divide: ['$totalRating', '$commentCount'] },
+              },
+            },
           },
         },
         { $unset: ['comments', 'totalRating'] },
