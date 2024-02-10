@@ -12,6 +12,8 @@ export const Component = {
   UserModel: Symbol.for('UserModel'),
   OfferService: Symbol.for('OfferService'),
   OfferModel: Symbol.for('OfferModel'),
+  CommentService: Symbol.for('CommentService'),
+  CommentModel: Symbol.for('CommentModel'),
 } as const;
 
 export const AmenitiesType = {
@@ -80,3 +82,8 @@ export const ListCities = [
     coordinates: GeographicalCoordinates.Dusseldorf,
   },
 ] as const;
+
+export const SortTypeMongoDB = {
+  Down: -1,
+  Up: 1,
+} as const;

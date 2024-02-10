@@ -1,0 +1,6 @@
+{
+  "watch": ["src"],
+  "ext": ".ts, .json,.js",
+  "ignore": [],
+  "exec": "npx ts-node ./src/main.rest.ts | pino-pretty --colorize --translateTime SYS:standard"
+}
