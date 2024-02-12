@@ -30,7 +30,6 @@ export class DefaultOfferService implements IOfferService {
   }
 
   public async find(count?: number): Promise<DocumentType<OfferEntity>[]> {
-    // return this.offerModel.find().sort({ createdAt: SortTypeMongoDB.Down }).limit(limit).populate(['userId']).exec();
     const limit = count ?? DEFAULT_OFFER_COUNT;
     return this.offerModel
       .aggregate([
@@ -67,7 +66,6 @@ export class DefaultOfferService implements IOfferService {
   }
 
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    // return this.offerModel.findById(offerId).populate(['userId']).exec();
     const aggregationResult = await this.offerModel
       .aggregate([
         { $match: { _id: new Types.ObjectId(offerId) } },

@@ -16,6 +16,16 @@ export const Component = {
   CommentModel: Symbol.for('CommentModel'),
 } as const;
 
+export const HttpMethod = {
+  Get: 'get',
+  Post: 'post',
+  Delete: 'delete',
+  Patch: 'patch',
+  Put: 'put',
+} as const;
+
+export const RouteApp = {} as const;
+
 export const AmenitiesType = {
   Breakfast: 'Breakfast',
   'Air conditioning': 'Air conditioning',
