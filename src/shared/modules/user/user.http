@@ -1,0 +1,27 @@
+# Пользователи
+## Создание нового пользователя
+
+POST http://localhost:3000/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "example@email.ru",
+  "name": "Mikhail",
+  // avatarPath: 'mikhail.jpg',
+  "userType": "обычный",
+  "password": "12"
+}
+
+###
+
+## Вход в закрытую часть приложения
+
+POST http://localhost:3000/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "example@email.ru",
+  "password": "12"
+}
+
+###
