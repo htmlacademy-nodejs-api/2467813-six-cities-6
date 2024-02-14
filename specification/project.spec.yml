@@ -48,8 +48,6 @@ paths:
                 $ref: '#/components/schemas/user'
         '409':
           description: Пользователь с таким email уже существует.
-        '400':
-          description: Не удается создать пользователя.
 
   /users/login/:
     post:
@@ -65,7 +63,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/authUser'
+              $ref: '#/components/schemas/loginUser'
         required: true
 
       responses:
@@ -77,6 +75,8 @@ paths:
                 $ref: '#/components/schemas/token'
         '401':
           description: Логин или пароль неверный или пользователь не существует.
+        '404':
+          description: Пользователь не найден
 
   /users/logout/:
     post:
@@ -94,7 +94,7 @@ paths:
             type: string
 
       responses:
-        '201':
+        '204':
           description: Cервис завершает пользовательский сеанс (сессию).
           content:
             application/json:
@@ -469,7 +469,7 @@ components:
           type: string
           example: обычный
 
-    authUser:
+    loginUser:
       type: object
 
       properties:
