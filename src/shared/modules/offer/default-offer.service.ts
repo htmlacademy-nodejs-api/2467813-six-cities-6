@@ -65,6 +65,7 @@ export class DefaultOfferService implements IOfferService {
       .exec();
   }
 
+  // FIXME:ПОПРАВИТЬ ИЗБРАННОЕ КАК БУДЕТ ДОСТУП ЧЕРЕЗ ТОКЕН
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     const aggregationResult = await this.offerModel
       .aggregate([
@@ -79,23 +80,28 @@ export class DefaultOfferService implements IOfferService {
         },
         {
           $addFields: {
-            commentCount: { $size: '$comments' },
-            //
-            totalRating: { $sum: '$comments.rating' },
+            commentCount: {
+              $size: '$comments',
+            },
+            rating: {
+              $avg: '$comments.rating',
+            },
+            publicationDate: '$createdAt',
           },
         },
         {
-          $addFields: {
-            rating: {
-              $cond: {
-                if: { $eq: ['$commentCount', 0] },
-                then: 0,
-                else: { $divide: ['$totalRating', '$commentCount'] },
-              },
-            },
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user',
           },
         },
-        { $unset: ['comments', 'totalRating'] },
+        {
+          $unwind: {
+            path: '$user',
+          },
+        },
       ])
       .exec();
 

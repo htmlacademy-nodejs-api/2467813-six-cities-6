@@ -204,9 +204,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/offer'
-
         '401':
           description: Токен недействителен или срок его действия истек.
+        '404':
+          description: Предложение с указанным идентификатором не найдено
 
     put:
       tags:
@@ -495,11 +496,11 @@ components:
       properties:
         title:
           type: string
-          example: title
+          example: Luxury Apartment
 
         description:
           type: string
-          example: description
+          example: Spacious apartment with a great view
 
         publicationDate:
           type: string
@@ -545,7 +546,7 @@ components:
 
         houseType:
           type: string
-          example: Paris
+          example: room
           enum:
             - apartment
             - house
@@ -597,16 +598,11 @@ components:
       properties:
         title:
           type: string
-          example: title
+          example: Luxury Apartment
 
         description:
           type: string
-          example: description
-
-        publicationDate:
-          type: string
-          example: 2022-04-06T08:45:40.283Z
-          format: date
+          example: Spacious apartment with a great view
 
         city:
           type: string
@@ -626,28 +622,20 @@ components:
         listImages:
           type: array
           example:
-            - example-path.png,
-            - example-path.png,
-            - example-path.png,
-            - example-path.png,
-            - example-path.png,
-            - example-path.png,
+            - example-path.png
+            - example-path.png
+            - example-path.png
+            - example-path.png
+            - example-path.png
+            - example-path.png
 
         isPremium:
           type: boolean
           example: false
 
-        isFavorite:
-          type: boolean
-          example: false
-
-        rating:
-          type: number
-          example: 1.4
-
         houseType:
           type: string
-          example: Paris
+          example: room
           enum:
             - apartment
             - house
