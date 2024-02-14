@@ -691,8 +691,12 @@ components:
 
         rating:
           type: number
-          example: 1.4
+          example: 2
 
         userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        offerId:
           type: string
           example: 6329c3d6a04ab1061c6425ea

@@ -40,7 +40,7 @@ export class OfferController extends BaseController {
       );
     }
 
-    // this.ok(res, fillDTO(OfferRdo, existsOffer));
-    this.ok(res, existsOffer);
+    this.ok(res, fillDTO(OfferRdo, existsOffer));
+    // this.ok(res, existsOffer);
   }
 }

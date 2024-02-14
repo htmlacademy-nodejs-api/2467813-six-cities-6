@@ -1,5 +1,6 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { TAmenitiesType, TCityType, THouseType } from '../../../types/index.js';
+import { UserRdo } from '../../user/index.js';
 
 export class OfferRdo {
   @Expose()
@@ -54,5 +55,6 @@ export class OfferRdo {
   public commentCount: number;
 
   @Expose()
-  public user: string;
+  @Type(() => UserRdo)
+  public user: UserRdo;
 }

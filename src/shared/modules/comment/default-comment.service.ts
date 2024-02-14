@@ -3,14 +3,19 @@ import { CommentEntity, CreateCommentDto, ICommentService } from './index.js';
 import { Component, SortTypeMongoDB } from '../../const/index.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { DEFAULT_COMMENT_COUNT } from './const/index.js';
+import { ILogger } from '../../libs/logger/index.js';
 
 @injectable()
 export class DefaultCommentService implements ICommentService {
-  constructor(@inject(Component.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>) {}
+  constructor(
+    @inject(Component.Logger) private readonly logger: ILogger,
+    @inject(Component.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>,
+  ) {}
 
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
     const comment = await this.commentModel.create(dto);
-    return comment.populate('userId');
+    this.logger.info(`New comment created: ${dto.text}`);
+    return comment;
   }
 
   public async findByOfferId(offerId: string, count?: number): Promise<DocumentType<CommentEntity>[]> {
