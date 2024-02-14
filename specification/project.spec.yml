@@ -227,7 +227,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/offer'
+              $ref: '#/components/schemas/createOffer'
         required: true
 
       responses:
@@ -264,7 +264,8 @@ paths:
                 type: object
         '401':
           description: Токен недействителен или срок его действия истек.
-
+        '404':
+          description: Предложение с указанным идентификатором не найдено
   /offers/premium/:
     get:
       tags:

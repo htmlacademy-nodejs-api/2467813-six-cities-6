@@ -29,6 +29,7 @@ export class DefaultOfferService implements IOfferService {
     return this.offerModel.findByIdAndDelete(offerId).exec();
   }
 
+  // FIXME:ПОПРАВИТЬ ИЗБРАННОЕ КАК БУДЕТ ДОСТУП ЧЕРЕЗ ТОКЕН
   public async find(count?: number): Promise<DocumentType<OfferEntity>[]> {
     const limit = count ?? DEFAULT_OFFER_COUNT;
     return this.offerModel
@@ -43,24 +44,36 @@ export class DefaultOfferService implements IOfferService {
         },
         {
           $addFields: {
-            commentCount: { $size: '$comments' },
-            totalRating: { $sum: '$comments.rating' },
+            commentCount: {
+              $size: '$comments',
+            },
+            rating: {
+              $avg: '$comments.rating',
+            },
+            publicationDate: '$createdAt',
           },
         },
         {
-          $addFields: {
-            rating: {
-              $cond: {
-                if: { $gt: ['$commentCount', 0] },
-                else: 0,
-                then: { $divide: ['$totalRating', '$commentCount'] },
-              },
-            },
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user',
           },
         },
-        { $unset: ['comments', 'totalRating'] },
-        { $sort: { createdAt: SortTypeMongoDB.Down } },
-        { $limit: limit },
+        {
+          $unwind: {
+            path: '$user',
+          },
+        },
+        {
+          $sort: {
+            createdAt: SortTypeMongoDB.Down,
+          },
+        },
+        {
+          $limit: limit,
+        },
       ])
       .exec();
   }

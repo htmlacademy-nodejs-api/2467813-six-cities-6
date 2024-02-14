@@ -7,3 +7,4 @@ export * from './offer.container.js';
 export * from './offer.controller.js';
 
 export * from './create-offer-request.type.js';
+export * from './update-offer-request.type.js';
