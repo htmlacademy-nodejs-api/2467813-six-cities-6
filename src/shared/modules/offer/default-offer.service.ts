@@ -16,9 +16,9 @@ export class DefaultOfferService implements IOfferService {
   ) {}
 
   public async create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
-    const comment = await this.offerModel.create(dto);
+    const offer = await this.offerModel.create(dto);
     this.logger.info(`New offer created: ${dto.title}`);
-    return comment;
+    return offer;
   }
 
   public async updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
@@ -67,6 +67,11 @@ export class DefaultOfferService implements IOfferService {
           },
         },
         {
+          $addFields: {
+            'user.id': '$user._id',
+          },
+        },
+        {
           $sort: {
             createdAt: SortTypeMongoDB.Down,
           },
@@ -80,7 +85,7 @@ export class DefaultOfferService implements IOfferService {
 
   // FIXME:ПОПРАВИТЬ ИЗБРАННОЕ КАК БУДЕТ ДОСТУП ЧЕРЕЗ ТОКЕН
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    const aggregationResult = await this.offerModel
+    const offers = await this.offerModel
       .aggregate([
         { $match: { _id: new Types.ObjectId(offerId) } },
         {
@@ -115,10 +120,15 @@ export class DefaultOfferService implements IOfferService {
             path: '$user',
           },
         },
+        {
+          $addFields: {
+            'user.id': '$user._id',
+          },
+        },
       ])
       .exec();
 
-    return aggregationResult.length > 0 ? aggregationResult[0] : null;
+    return offers.length > 0 ? offers[0] : null;
   }
 
   public async findPremium(count?: number): Promise<DocumentType<OfferEntity>[]> {
