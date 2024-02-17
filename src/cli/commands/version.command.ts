@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { ICommand } from './command.interface.js';
 import chalk from 'chalk';
 import { isPackageJSONConfig } from '../utils/index.js';
-import { COMMANDS } from '../const/index.js';
+import { Commands } from '../const/index.js';
 
 export class VersionCommand implements ICommand {
   constructor(private readonly filePath: string = './package.json') {}
@@ -20,7 +20,7 @@ export class VersionCommand implements ICommand {
   }
 
   public getName(): string {
-    return COMMANDS.version;
+    return Commands.version;
   }
 
   public async execute(..._parameters: string[]): Promise<void> {

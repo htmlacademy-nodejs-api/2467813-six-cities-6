@@ -1,4 +1,4 @@
-export const COMMANDS = {
+export const Commands = {
   help: '--help',
   version: '--version',
   import: '--import',

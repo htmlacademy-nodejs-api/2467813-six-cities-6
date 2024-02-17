@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { BaseController, HttpError } from '../../libs/rest/index.js';
+import { BaseController, HttpError, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
 import { ILogger } from '../../libs/logger/index.js';
 import { Component, HttpMethod, Path } from '../../const/index.js';
 import { TCreateOfferRequest, IOfferService, OfferRdo, TUpdateOfferRequest } from './index.js';
@@ -22,10 +22,30 @@ export class OfferController extends BaseController {
 
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: '/:id/', method: HttpMethod.Patch, handler: this.update });
-    this.addRoute({ path: '/:id/', method: HttpMethod.Delete, handler: this.delete });
-    this.addRoute({ path: '/:id/', method: HttpMethod.Get, handler: this.show });
-    this.addRoute({ path: `/:id/${Path.Comments}/`, method: HttpMethod.Put, handler: this.updateFavorite });
+    this.addRoute({
+      path: '/:id/',
+      method: HttpMethod.Patch,
+      handler: this.update,
+      middlewares: [new ValidateObjectIdMiddleware('id')],
+    });
+    this.addRoute({
+      path: '/:id/',
+      method: HttpMethod.Delete,
+      handler: this.delete,
+      middlewares: [new ValidateObjectIdMiddleware('id')],
+    });
+    this.addRoute({
+      path: '/:id/',
+      method: HttpMethod.Get,
+      handler: this.show,
+      middlewares: [new ValidateObjectIdMiddleware('id')],
+    });
+    this.addRoute({
+      path: `/:id/${Path.Comments}/`,
+      method: HttpMethod.Put,
+      handler: this.updateFavorite,
+      middlewares: [new ValidateObjectIdMiddleware('id')],
+    });
   }
 
   public async create({ body }: TCreateOfferRequest, res: Response): Promise<void> {

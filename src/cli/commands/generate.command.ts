@@ -1,7 +1,7 @@
 import got from 'got';
 import { DECIMAL_SYSTEM } from '../../shared/const/const.js';
 import { TMockServerData } from '../../shared/types/index.js';
-import { COMMANDS } from '../const/index.js';
+import { Commands } from '../const/index.js';
 import { ICommand } from './command.interface.js';
 import { TSVOfferGenerator } from '../../shared/libs/offer-generator/index.js';
 import chalk from 'chalk';
@@ -29,7 +29,7 @@ export class GenerateCommand implements ICommand {
   }
 
   public getName(): string {
-    return COMMANDS.generate;
+    return Commands.generate;
   }
 
   public async execute(...parameters: string[]): Promise<void> {

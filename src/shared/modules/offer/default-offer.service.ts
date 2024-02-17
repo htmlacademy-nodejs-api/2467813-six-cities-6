@@ -4,10 +4,12 @@ import { IOfferService } from './offer-service.interface.js';
 import { ILogger } from '../../libs/logger/index.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { CreateOfferDto, OfferEntity } from './index.js';
-import { DEFAULT_OFFER_COUNT, DEFAULT_OFFER_PREMIUM_COUNT } from './const/index.js';
+import { OfferCount } from './const/index.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { Types } from 'mongoose';
 import { UserEntity } from '../user/index.js';
+import { HttpError } from '../../libs/rest/index.js';
+import { StatusCodes } from 'http-status-codes';
 
 @injectable()
 export class DefaultOfferService implements IOfferService {
@@ -58,7 +60,7 @@ export class DefaultOfferService implements IOfferService {
 
   // FIXME:ПОПРАВИТЬ ИЗБРАННОЕ КАК БУДЕТ ДОСТУП ЧЕРЕЗ ТОКЕН
   public async find(count?: number): Promise<DocumentType<OfferEntity>[]> {
-    const limit = count ?? DEFAULT_OFFER_COUNT;
+    const limit = count ?? OfferCount.common;
     return this.offerModel
       .aggregate([
         {
@@ -170,12 +172,12 @@ export class DefaultOfferService implements IOfferService {
   }
 
   public async findPremium(count?: number): Promise<DocumentType<OfferEntity>[]> {
-    const limit = count ?? DEFAULT_OFFER_PREMIUM_COUNT;
+    const limit = count ?? OfferCount.premium;
     return this.offerModel.find().sort({ createdAt: SortTypeMongoDB.Down }).limit(limit).populate(['userId']).exec();
   }
 
   public async findFavorites(count?: number): Promise<DocumentType<OfferEntity>[]> {
-    const limit = count ?? DEFAULT_OFFER_COUNT;
+    const limit = count ?? OfferCount.common;
     return this.offerModel
       .find({ isFavorite: true }, {}, { limit })
       .sort({ createdAt: SortTypeMongoDB.Down })
@@ -183,11 +185,11 @@ export class DefaultOfferService implements IOfferService {
       .exec();
   }
 
-  public async togglerFavorites(userId: string, offerId: string) {
+  public async togglerFavorites(userId: string, offerId: string): Promise<boolean> {
     const user = await this.userModel.findById(userId).exec();
 
     if (!user) {
-      throw new Error('User not found');
+      throw new HttpError(StatusCodes.NOT_FOUND, `User with id ${userId} not found.`, 'DefaultOfferService');
     }
 
     const offerObjectId = new Types.ObjectId(offerId);

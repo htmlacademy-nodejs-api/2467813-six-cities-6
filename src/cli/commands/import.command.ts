@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import { TSVFileReader } from '../../shared/libs/file-rider/index.js';
 import { TOffer } from '../../shared/types/index.js';
 import { createOffer, getMongoURI, isError } from '../../shared/utils/index.js';
-import { COMMANDS, DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from '../const/index.js';
+import { Commands, DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from '../const/index.js';
 import { ICommand } from './command.interface.js';
 import { table } from '../config/index.js';
 import { DefaultUserService, IUserService, UserModel } from '../../shared/modules/user/index.js';
@@ -32,7 +32,7 @@ export class ImportCommand implements ICommand {
   }
 
   public getName(): string {
-    return COMMANDS.import;
+    return Commands.import;
   }
 
   private async onImportedLine(line: string, resolve: () => void) {

@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { BaseController, HttpError, TRequestQuery } from '../../libs/rest/index.js';
+import { BaseController, HttpError, TRequestQuery, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
 import { Component, HttpMethod, Path } from '../../const/const.js';
 import { ILogger } from '../../libs/logger/logger.interface.js';
 import { CreateCommentRequest, ICommentService } from './index.js';
@@ -10,6 +10,7 @@ import { COMMENT_CONTROLLER } from './const/index.js';
 import { IOfferService } from '../offer/index.js';
 import { StatusCodes } from 'http-status-codes';
 import { TParamOfferId } from '../offer/types/param-offerid.type.js';
+import { OFFER_CONTROLLER } from '../offer/const/index.js';
 
 @injectable()
 export class CommentController extends BaseController {
@@ -23,12 +24,17 @@ export class CommentController extends BaseController {
     this.logger.info(`Register routes for ${COMMENT_CONTROLLER}...`);
 
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: `/:id/${Path.Comments}/`, method: HttpMethod.Get, handler: this.getComments });
+    this.addRoute({
+      path: `/:id/${Path.Comments}/`,
+      method: HttpMethod.Get,
+      handler: this.getComments,
+      middlewares: [new ValidateObjectIdMiddleware('id')],
+    });
   }
 
   public async create({ body }: CreateCommentRequest, res: Response): Promise<void> {
     if (!(await this.offerService.exists(body.offerId))) {
-      throw new HttpError(StatusCodes.NOT_FOUND, `Offer with id ${body.offerId} not found.`, `${COMMENT_CONTROLLER}`);
+      throw new HttpError(StatusCodes.NOT_FOUND, `Offer with id ${body.offerId} not found.`, `${OFFER_CONTROLLER}`);
     }
 
     const comment = await this.commentService.create(body);
@@ -44,7 +50,7 @@ export class CommentController extends BaseController {
     const { limit } = query;
 
     if (!(await this.offerService.exists(id))) {
-      throw new HttpError(StatusCodes.NOT_FOUND, `Offer with id ${id} not found.`, 'OfferController');
+      throw new HttpError(StatusCodes.NOT_FOUND, `Offer with id ${id} not found.`, `${OFFER_CONTROLLER}`);
     }
 
     const comments = await this.commentService.findByOfferId(id, !isNaN(Number(limit)) ? Number(limit) : undefined);
