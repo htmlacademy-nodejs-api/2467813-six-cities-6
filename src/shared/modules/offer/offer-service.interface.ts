@@ -10,6 +10,8 @@ export interface IOfferService {
   findById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   findPremium(): Promise<DocumentType<OfferEntity>[]>;
   findFavorites(): Promise<DocumentType<OfferEntity>[]>;
+  togglerFavorites(userId: string, offerId: string): Promise<boolean>;
+
   // Инкремент комментария
   incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   // Существование документа в базе данных

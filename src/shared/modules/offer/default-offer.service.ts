@@ -7,11 +7,13 @@ import { CreateOfferDto, OfferEntity } from './index.js';
 import { DEFAULT_OFFER_COUNT, DEFAULT_OFFER_PREMIUM_COUNT } from './const/index.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { Types } from 'mongoose';
+import { UserEntity } from '../user/index.js';
 
 @injectable()
 export class DefaultOfferService implements IOfferService {
   constructor(
     @inject(Component.Logger) private readonly logger: ILogger,
+    @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>,
     @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>,
   ) {}
 
@@ -27,6 +29,31 @@ export class DefaultOfferService implements IOfferService {
 
   public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel.findByIdAndDelete(offerId).exec();
+    // FIXME: НЕ ПОЛУЧАЕТСЯ РЕШИТЬ КАСКАДНОЕ УДАЛЕНИЕ ЧЕРЕЗ ТРАНЗАКЦИЮ
+    // const session = await startSession();
+    // try {
+    //   session.startTransaction();
+
+    //   // Удаление предложения
+    //   const deletedOffer = await this.offerModel.findByIdAndDelete(offerId).session(session).exec();
+
+    //   // Если предложение удалено, удаляем связанные комментарии
+    //   if (deletedOffer) {
+    //     await this.commentModel
+    //       .deleteMany({ offerId: new Types.ObjectId(offerId) })
+    //       .session(session)
+    //       .exec();
+    //   }
+
+    //   // Завершение транзакции
+    //   await session.commitTransaction();
+    //   return deletedOffer;
+    // } catch (error) {
+    //   await session.abortTransaction();
+    //   throw error;
+    // } finally {
+    //   session.endSession();
+    // }
   }
 
   // FIXME:ПОПРАВИТЬ ИЗБРАННОЕ КАК БУДЕТ ДОСТУП ЧЕРЕЗ ТОКЕН
@@ -34,6 +61,14 @@ export class DefaultOfferService implements IOfferService {
     const limit = count ?? DEFAULT_OFFER_COUNT;
     return this.offerModel
       .aggregate([
+        {
+          $sort: {
+            createdAt: SortTypeMongoDB.Down,
+          },
+        },
+        {
+          $limit: limit,
+        },
         {
           $lookup: {
             from: 'comments',
@@ -43,7 +78,7 @@ export class DefaultOfferService implements IOfferService {
           },
         },
         {
-          $addFields: {
+          $set: {
             commentCount: {
               $size: '$comments',
             },
@@ -62,22 +97,19 @@ export class DefaultOfferService implements IOfferService {
           },
         },
         {
+          $project: {
+            comments: 0,
+          },
+        },
+        {
           $unwind: {
             path: '$user',
           },
         },
         {
-          $addFields: {
+          $set: {
             'user.id': '$user._id',
           },
-        },
-        {
-          $sort: {
-            createdAt: SortTypeMongoDB.Down,
-          },
-        },
-        {
-          $limit: limit,
         },
       ])
       .exec();
@@ -87,7 +119,9 @@ export class DefaultOfferService implements IOfferService {
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     const offers = await this.offerModel
       .aggregate([
-        { $match: { _id: new Types.ObjectId(offerId) } },
+        {
+          $match: { _id: new Types.ObjectId(offerId) },
+        },
         {
           $lookup: {
             from: 'comments',
@@ -97,7 +131,7 @@ export class DefaultOfferService implements IOfferService {
           },
         },
         {
-          $addFields: {
+          $set: {
             commentCount: {
               $size: '$comments',
             },
@@ -116,12 +150,15 @@ export class DefaultOfferService implements IOfferService {
           },
         },
         {
-          $unwind: {
-            path: '$user',
+          $project: {
+            comments: 0,
           },
         },
         {
-          $addFields: {
+          $unwind: '$user',
+        },
+        {
+          $set: {
             'user.id': '$user._id',
           },
         },
@@ -143,6 +180,31 @@ export class DefaultOfferService implements IOfferService {
       .sort({ createdAt: SortTypeMongoDB.Down })
       .populate(['userId'])
       .exec();
+  }
+
+  public async togglerFavorites(userId: string, offerId: string) {
+    const user = await this.userModel.findById(userId).exec();
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const offerObjectId = new Types.ObjectId(offerId);
+    const isFavorite = user.favoriteOffers.includes(offerObjectId);
+
+    if (isFavorite) {
+      // Если предложение уже в избранном, удаляем его
+      user.favoriteOffers.pull(offerObjectId);
+
+      await user.save();
+      return false;
+    } else {
+      // Если предложения нет в избранном, добавляем его
+      user.favoriteOffers.push(offerObjectId);
+
+      await user.save();
+      return true;
+    }
   }
 
   public async incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {

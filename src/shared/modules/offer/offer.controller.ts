@@ -24,6 +24,7 @@ export class OfferController extends BaseController {
     this.addRoute({ path: '/:id/', method: HttpMethod.Patch, handler: this.update });
     this.addRoute({ path: '/:id/', method: HttpMethod.Delete, handler: this.delete });
     this.addRoute({ path: '/:id/', method: HttpMethod.Get, handler: this.show });
+    this.addRoute({ path: '/:id/favorite/', method: HttpMethod.Put, handler: this.updateFavorite });
   }
 
   public async create({ body }: CreateOfferRequest, res: Response): Promise<void> {
@@ -67,5 +68,16 @@ export class OfferController extends BaseController {
     }
 
     this.ok(res, fillDTO(OfferRdo, offer));
+  }
+
+  public async updateFavorite({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+    // FIXME:ПОПРАВИТЬ ИЗБРАННОЕ КАК БУДЕТ ДОСТУП ЧЕРЕЗ ТОКЕН
+    const user = '65d0a425f9edd529dc99adfb';
+    const { id } = params;
+    const offer = await this.offerService.togglerFavorites(user, id);
+
+    this.ok(res, {
+      isFavorite: offer,
+    });
   }
 }
