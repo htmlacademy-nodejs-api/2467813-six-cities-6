@@ -61,7 +61,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     type: String,
     required: true,
     trim: true,
-    match: [/\.(jpg|png)(\?.*)?$/i, 'The user`s image must include an extension.jpg or .png'],
+    match: [/\.(jpg|png)(\?.*)?$/i, 'The previewImage image must include an extension.jpg or .png'],
   })
   public previewImage: string;
 
@@ -122,7 +122,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     type: Number,
     required: true,
     min: [100, 'Min length for rentalCost path is 100'],
-    max: [100000, 'Max length for rentalCost path is 100000'],
+    max: [100_000, 'Max length for rentalCost path is 100000'],
   })
   public rentalCost: number;
 

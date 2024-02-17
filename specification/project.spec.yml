@@ -374,6 +374,8 @@ paths:
           description: id является недопустимым ObjectId
         '401':
           description: Токен недействителен или срок его действия истек.
+        '404':
+          description: Предложение с указанным идентификатором не найдено
 
   # COMMENTS
   /comments/{offer_id}/comments/:
@@ -403,7 +405,8 @@ paths:
                   $ref: '#/components/schemas/comment'
         '400':
           description: id является недопустимым ObjectId
-
+        '404':
+          description: Предложение с указанным идентификатором не найдено
   /comments/:
     post:
       tags:

@@ -1,8 +1,15 @@
 import { inject, injectable } from 'inversify';
-import { BaseController, HttpError, TRequestQuery, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
+import {
+  BaseController,
+  DocumentExistsMiddleware,
+  HttpError,
+  TRequestQuery,
+  ValidateDtoMiddleware,
+  ValidateObjectIdMiddleware,
+} from '../../libs/rest/index.js';
 import { Component, HttpMethod, Path } from '../../const/const.js';
 import { ILogger } from '../../libs/logger/logger.interface.js';
-import { CreateCommentRequest, ICommentService } from './index.js';
+import { CreateCommentDto, CreateCommentRequest, ICommentService } from './index.js';
 import { Request, Response } from 'express';
 import { fillDTO } from '../../utils/index.js';
 import { CommentRdo } from './rdo/comment.rdo.js';
@@ -23,12 +30,20 @@ export class CommentController extends BaseController {
 
     this.logger.info(`Register routes for ${COMMENT_CONTROLLER}...`);
 
-    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateCommentDto)],
+    });
     this.addRoute({
       path: `/:id/${Path.Comments}/`,
       method: HttpMethod.Get,
       handler: this.getComments,
-      middlewares: [new ValidateObjectIdMiddleware('id')],
+      middlewares: [
+        new ValidateObjectIdMiddleware('id'),
+        new DocumentExistsMiddleware(this.offerService, 'offer', 'id'),
+      ],
     });
   }
 
@@ -48,11 +63,6 @@ export class CommentController extends BaseController {
   ): Promise<void> {
     const { id } = params;
     const { limit } = query;
-
-    if (!(await this.offerService.exists(id))) {
-      throw new HttpError(StatusCodes.NOT_FOUND, `Offer with id ${id} not found.`, `${OFFER_CONTROLLER}`);
-    }
-
     const comments = await this.commentService.findByOfferId(id, !isNaN(Number(limit)) ? Number(limit) : undefined);
     this.ok(res, fillDTO(CommentRdo, comments));
   }
