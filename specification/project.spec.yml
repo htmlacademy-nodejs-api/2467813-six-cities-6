@@ -689,9 +689,9 @@ components:
       type: object
 
       properties:
-        description:
+        text:
           type: string
-          example: description
+          example: text
 
         rating:
           type: number

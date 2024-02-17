@@ -86,6 +86,7 @@ export class DefaultOfferService implements IOfferService {
               $avg: '$comments.rating',
             },
             publicationDate: '$createdAt',
+            id: '$_id',
           },
         },
         {
@@ -97,11 +98,6 @@ export class DefaultOfferService implements IOfferService {
           },
         },
         {
-          $project: {
-            comments: 0,
-          },
-        },
-        {
           $unwind: {
             path: '$user',
           },
@@ -109,6 +105,11 @@ export class DefaultOfferService implements IOfferService {
         {
           $set: {
             'user.id': '$user._id',
+          },
+        },
+        {
+          $project: {
+            comments: 0,
           },
         },
       ])

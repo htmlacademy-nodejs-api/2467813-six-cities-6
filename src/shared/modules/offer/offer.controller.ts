@@ -2,12 +2,13 @@ import { inject, injectable } from 'inversify';
 import { BaseController, HttpError } from '../../libs/rest/index.js';
 import { ILogger } from '../../libs/logger/index.js';
 import { Component, HttpMethod } from '../../const/index.js';
-import { CreateOfferRequest, IOfferService, OfferRdo, UpdateOfferRequest } from './index.js';
+import { TCreateOfferRequest, IOfferService, OfferRdo, TUpdateOfferRequest } from './index.js';
 import { Request, Response } from 'express';
 import { fillDTO } from '../../utils/index.js';
 import { StatusCodes } from 'http-status-codes';
-import { ParamOfferId } from './types/param-offerid.type.js';
+import { TParamOfferId } from './types/param-offerid.type.js';
 import { OFFER_CONTROLLER } from './const/index.js';
+import { TRequestQuery } from '../../libs/rest/types/request-query.type.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -27,17 +28,18 @@ export class OfferController extends BaseController {
     this.addRoute({ path: '/:id/favorite/', method: HttpMethod.Put, handler: this.updateFavorite });
   }
 
-  public async create({ body }: CreateOfferRequest, res: Response): Promise<void> {
+  public async create({ body }: TCreateOfferRequest, res: Response): Promise<void> {
     const result = await this.offerService.create(body);
     this.created(res, fillDTO(OfferRdo, result));
   }
 
-  public async index(_req: Request, res: Response): Promise<void> {
-    const offers = await this.offerService.find();
+  public async index({ query }: Request<unknown, unknown, unknown, TRequestQuery>, res: Response): Promise<void> {
+    const { limit } = query;
+    const offers = await this.offerService.find(!isNaN(Number(limit)) ? Number(limit) : undefined);
     this.ok(res, fillDTO(OfferRdo, offers));
   }
 
-  public async update({ body, params }: UpdateOfferRequest, res: Response): Promise<void> {
+  public async update({ body, params }: TUpdateOfferRequest, res: Response): Promise<void> {
     const { id } = params;
     const offer = await this.offerService.updateById(String(id), body);
 
@@ -48,7 +50,7 @@ export class OfferController extends BaseController {
     this.ok(res, fillDTO(OfferRdo, offer));
   }
 
-  public async delete({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+  public async delete({ params }: Request<TParamOfferId>, res: Response): Promise<void> {
     const { id } = params;
     const offer = await this.offerService.deleteById(id);
 
@@ -59,7 +61,7 @@ export class OfferController extends BaseController {
     this.noContent(res, offer);
   }
 
-  public async show({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+  public async show({ params }: Request<TParamOfferId>, res: Response): Promise<void> {
     const { id } = params;
     const offer = await this.offerService.findById(id);
 
@@ -70,7 +72,7 @@ export class OfferController extends BaseController {
     this.ok(res, fillDTO(OfferRdo, offer));
   }
 
-  public async updateFavorite({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+  public async updateFavorite({ params }: Request<TParamOfferId>, res: Response): Promise<void> {
     // FIXME:ПОПРАВИТЬ ИЗБРАННОЕ КАК БУДЕТ ДОСТУП ЧЕРЕЗ ТОКЕН
     const user = '65d0a425f9edd529dc99adfb';
     const { id } = params;

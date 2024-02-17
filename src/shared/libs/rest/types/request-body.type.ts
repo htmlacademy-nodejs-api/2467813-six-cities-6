@@ -1,1 +1,1 @@
-export type RequestBody = Record<string, unknown>;
+export type TRequestBody = Record<string, unknown>;
