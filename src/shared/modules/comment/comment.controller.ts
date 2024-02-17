@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { BaseController, HttpError, TRequestQuery } from '../../libs/rest/index.js';
-import { Component, HttpMethod } from '../../const/const.js';
+import { Component, HttpMethod, Path } from '../../const/const.js';
 import { ILogger } from '../../libs/logger/logger.interface.js';
 import { CreateCommentRequest, ICommentService } from './index.js';
 import { Request, Response } from 'express';
@@ -23,7 +23,7 @@ export class CommentController extends BaseController {
     this.logger.info(`Register routes for ${COMMENT_CONTROLLER}...`);
 
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/:id/', method: HttpMethod.Get, handler: this.index });
+    this.addRoute({ path: `/:id/${Path.Comments}/`, method: HttpMethod.Get, handler: this.getComments });
   }
 
   public async create({ body }: CreateCommentRequest, res: Response): Promise<void> {
@@ -36,12 +36,16 @@ export class CommentController extends BaseController {
     this.created(res, fillDTO(CommentRdo, comment));
   }
 
-  public async index(
+  public async getComments(
     { params, query }: Request<TParamOfferId, unknown, unknown, TRequestQuery>,
     res: Response,
   ): Promise<void> {
     const { id } = params;
     const { limit } = query;
+
+    if (!(await this.offerService.exists(id))) {
+      throw new HttpError(StatusCodes.NOT_FOUND, `Offer with id ${id} not found.`, 'OfferController');
+    }
 
     const comments = await this.commentService.findByOfferId(id, !isNaN(Number(limit)) ? Number(limit) : undefined);
     this.ok(res, fillDTO(CommentRdo, comments));

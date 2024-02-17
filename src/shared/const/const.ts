@@ -3,6 +3,21 @@ export const TRUE = 'true';
 export const FUNCTION = 'function';
 export const LOG_FILE_PATH = 'logs/rest.log';
 
+export const Path = {
+  Comments: 'comments',
+  Favorite: 'favorite',
+  Register: 'register',
+  Login: 'login',
+  Logout: 'logout',
+  CheckAuth: 'check_auth',
+} as const;
+
+export const AppRoutes = {
+  Users: 'users',
+  Offers: 'offers',
+  Comments: 'comments',
+} as const;
+
 export const Component = {
   RestApplication: Symbol.for('RestApplication'),
   Logger: Symbol.for('Logger'),

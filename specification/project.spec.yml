@@ -363,7 +363,7 @@ paths:
           description: Токен недействителен или срок его действия истек.
 
   # COMMENTS
-  /comments/{offer_id}/:
+  /comments/{offer_id}/comments/:
     get:
       tags:
         - comments
