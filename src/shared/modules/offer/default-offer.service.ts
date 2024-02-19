@@ -16,9 +16,9 @@ export class DefaultOfferService implements IOfferService {
   ) {}
 
   public async create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
-    const result = await this.offerModel.create(dto);
+    const comment = await this.offerModel.create(dto);
     this.logger.info(`New offer created: ${dto.title}`);
-    return result;
+    return comment;
   }
 
   public async updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
@@ -29,8 +29,8 @@ export class DefaultOfferService implements IOfferService {
     return this.offerModel.findByIdAndDelete(offerId).exec();
   }
 
+  // FIXME:ПОПРАВИТЬ ИЗБРАННОЕ КАК БУДЕТ ДОСТУП ЧЕРЕЗ ТОКЕН
   public async find(count?: number): Promise<DocumentType<OfferEntity>[]> {
-    // return this.offerModel.find().sort({ createdAt: SortTypeMongoDB.Down }).limit(limit).populate(['userId']).exec();
     const limit = count ?? DEFAULT_OFFER_COUNT;
     return this.offerModel
       .aggregate([
@@ -44,30 +44,42 @@ export class DefaultOfferService implements IOfferService {
         },
         {
           $addFields: {
-            commentCount: { $size: '$comments' },
-            totalRating: { $sum: '$comments.rating' },
+            commentCount: {
+              $size: '$comments',
+            },
+            rating: {
+              $avg: '$comments.rating',
+            },
+            publicationDate: '$createdAt',
           },
         },
         {
-          $addFields: {
-            rating: {
-              $cond: {
-                if: { $gt: ['$commentCount', 0] },
-                else: 0,
-                then: { $divide: ['$totalRating', '$commentCount'] },
-              },
-            },
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user',
           },
         },
-        { $unset: ['comments', 'totalRating'] },
-        { $sort: { createdAt: SortTypeMongoDB.Down } },
-        { $limit: limit },
+        {
+          $unwind: {
+            path: '$user',
+          },
+        },
+        {
+          $sort: {
+            createdAt: SortTypeMongoDB.Down,
+          },
+        },
+        {
+          $limit: limit,
+        },
       ])
       .exec();
   }
 
+  // FIXME:ПОПРАВИТЬ ИЗБРАННОЕ КАК БУДЕТ ДОСТУП ЧЕРЕЗ ТОКЕН
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    // return this.offerModel.findById(offerId).populate(['userId']).exec();
     const aggregationResult = await this.offerModel
       .aggregate([
         { $match: { _id: new Types.ObjectId(offerId) } },
@@ -81,23 +93,28 @@ export class DefaultOfferService implements IOfferService {
         },
         {
           $addFields: {
-            commentCount: { $size: '$comments' },
-            //
-            totalRating: { $sum: '$comments.rating' },
+            commentCount: {
+              $size: '$comments',
+            },
+            rating: {
+              $avg: '$comments.rating',
+            },
+            publicationDate: '$createdAt',
           },
         },
         {
-          $addFields: {
-            rating: {
-              $cond: {
-                if: { $eq: ['$commentCount', 0] },
-                then: 0,
-                else: { $divide: ['$totalRating', '$commentCount'] },
-              },
-            },
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user',
           },
         },
-        { $unset: ['comments', 'totalRating'] },
+        {
+          $unwind: {
+            path: '$user',
+          },
+        },
       ])
       .exec();
 

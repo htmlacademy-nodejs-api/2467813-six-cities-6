@@ -36,6 +36,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({
     type: Date,
     required: true,
+    default: Date.now,
   })
   public publicationDate: Date;
 
@@ -143,11 +144,6 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     required: true,
   })
   public longitude: number;
-
-  @prop({
-    default: 0,
-  })
-  public commentCount: number;
 
   @prop({
     ref: UserEntity,

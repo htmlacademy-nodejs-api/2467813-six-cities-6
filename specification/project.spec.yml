@@ -48,8 +48,6 @@ paths:
                 $ref: '#/components/schemas/user'
         '409':
           description: Пользователь с таким email уже существует.
-        '400':
-          description: Не удается создать пользователя.
 
   /users/login/:
     post:
@@ -65,7 +63,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/authUser'
+              $ref: '#/components/schemas/loginUser'
         required: true
 
       responses:
@@ -77,6 +75,8 @@ paths:
                 $ref: '#/components/schemas/token'
         '401':
           description: Логин или пароль неверный или пользователь не существует.
+        '404':
+          description: Пользователь не найден
 
   /users/logout/:
     post:
@@ -94,7 +94,7 @@ paths:
             type: string
 
       responses:
-        '201':
+        '204':
           description: Cервис завершает пользовательский сеанс (сессию).
           content:
             application/json:
@@ -204,9 +204,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/offer'
-
         '401':
           description: Токен недействителен или срок его действия истек.
+        '404':
+          description: Предложение с указанным идентификатором не найдено
 
     put:
       tags:
@@ -226,7 +227,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/offer'
+              $ref: '#/components/schemas/createOffer'
         required: true
 
       responses:
@@ -263,7 +264,8 @@ paths:
                 type: object
         '401':
           description: Токен недействителен или срок его действия истек.
-
+        '404':
+          description: Предложение с указанным идентификатором не найдено
   /offers/premium/:
     get:
       tags:
@@ -469,7 +471,7 @@ components:
           type: string
           example: обычный
 
-    authUser:
+    loginUser:
       type: object
 
       properties:
@@ -495,11 +497,11 @@ components:
       properties:
         title:
           type: string
-          example: title
+          example: Luxury Apartment
 
         description:
           type: string
-          example: description
+          example: Spacious apartment with a great view
 
         publicationDate:
           type: string
@@ -545,7 +547,7 @@ components:
 
         houseType:
           type: string
-          example: Paris
+          example: room
           enum:
             - apartment
             - house
@@ -597,16 +599,11 @@ components:
       properties:
         title:
           type: string
-          example: title
+          example: Luxury Apartment
 
         description:
           type: string
-          example: description
-
-        publicationDate:
-          type: string
-          example: 2022-04-06T08:45:40.283Z
-          format: date
+          example: Spacious apartment with a great view
 
         city:
           type: string
@@ -626,28 +623,20 @@ components:
         listImages:
           type: array
           example:
-            - example-path.png,
-            - example-path.png,
-            - example-path.png,
-            - example-path.png,
-            - example-path.png,
-            - example-path.png,
+            - example-path.png
+            - example-path.png
+            - example-path.png
+            - example-path.png
+            - example-path.png
+            - example-path.png
 
         isPremium:
           type: boolean
           example: false
 
-        isFavorite:
-          type: boolean
-          example: false
-
-        rating:
-          type: number
-          example: 1.4
-
         houseType:
           type: string
-          example: Paris
+          example: room
           enum:
             - apartment
             - house
@@ -703,8 +692,12 @@ components:
 
         rating:
           type: number
-          example: 1.4
+          example: 2
 
         userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        offerId:
           type: string
           example: 6329c3d6a04ab1061c6425ea
