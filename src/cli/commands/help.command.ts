@@ -1,11 +1,11 @@
 /* eslint-disable indent */
-import { COMMANDS } from '../const/index.js';
+import { Commands } from '../const/index.js';
 import { ICommand } from './command.interface.js';
 import chalk from 'chalk';
 
 export class HelpCommand implements ICommand {
   public getName(): string {
-    return COMMANDS.help;
+    return Commands.help;
   }
 
   public async execute(..._parameters: string[]): Promise<void> {
@@ -15,16 +15,16 @@ export class HelpCommand implements ICommand {
             cli.js --<command> [--arguments]
         Команды:
             ${chalk.gray(
-              `${COMMANDS.version}:`,
+              `${Commands.version}:`,
             )}                                                      # выводит номер версии
             ${chalk.gray(
-              `${COMMANDS.help}:`,
+              `${Commands.help}:`,
             )}                                                         # печатает этот текст
             ${chalk.gray(
-              `${COMMANDS.import} <path> <db_login> <db_password> <db_host> <db_name>:`,
+              `${Commands.import} <path> <db_login> <db_password> <db_host> <db_name>:`,
             )}   # импортирует данные из файла TSV в базу данных
             ${chalk.gray(
-              `${COMMANDS.generate} <n> <path> <url>:`,
+              `${Commands.generate} <n> <path> <url>:`,
             )}                                    # генерирует произвольное количество тестовых данных
     `);
   }

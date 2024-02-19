@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { IConfig, TRestSchema } from '../shared/config/index.js';
 import { ILogger } from '../shared/libs/logger/index.js';
-import { Component } from '../shared/const/index.js';
+import { AppRoutes, Component } from '../shared/const/index.js';
 import { IDatabaseClient } from '../shared/libs/database-client/index.js';
 import { getMongoURI } from '../shared/utils/index.js';
 import express, { Express } from 'express';
@@ -46,9 +46,9 @@ export class RestApplication {
   }
 
   private async initControllers() {
-    this.server.use('/users', this.userController.router);
-    this.server.use('/offers', this.offerController.router);
-    this.server.use('/comments', this.commentController.router);
+    this.server.use(`/${AppRoutes.Users}`, this.userController.router);
+    this.server.use(`/${AppRoutes.Offers}`, this.offerController.router);
+    this.server.use(`/${AppRoutes.Comments}`, this.commentController.router);
   }
 
   private async initServer() {

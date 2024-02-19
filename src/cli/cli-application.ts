@@ -1,13 +1,13 @@
 import { CommandParser } from './command-parser.js';
 import { ICommand } from './commands/command.interface.js';
-import { COMMANDS } from './const/index.js';
+import { Commands } from './const/index.js';
 
 type TCommandCollection = Record<string, ICommand>;
 
 export class CLIApplication {
   private commands: TCommandCollection = {};
 
-  constructor(private readonly defaultCommand: string = COMMANDS.help) {}
+  constructor(private readonly defaultCommand: string = Commands.help) {}
 
   public registerCommands(commandList: ICommand[]): void {
     commandList.forEach((command) => {

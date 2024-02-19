@@ -1,14 +1,19 @@
 # Комментарии
 ## Добавление комментария
 
-POST http://localhost:3000/comments/65ccbd9a891f74b32fb1b07a/ HTTP/1.1
+POST http://localhost:3000/comments/ HTTP/1.1
 Content-Type: application/json
 
 {
-  "text": "qwerty 1",
+  "text": "qwerty test",
   "rating": 2,
-  "offerId": "65ccbd9a891f74b32fb1b07a",
-  "userId": "65ccbd384780539a73211917"
+  "offerId": "65d0aabf2a3771b3bd5c6b03",
+  "userId": "65d0a425f9edd529dc99adfb"
 }
 
 ###
+
+## Список комментариев для предложения
+
+GET http://localhost:3000/comments/65d0aabf2a3771b3bd5c6b01/comments/ HTTP/1.1
+Content-Type: application/json

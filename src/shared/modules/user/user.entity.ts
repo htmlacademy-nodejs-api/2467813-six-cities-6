@@ -3,6 +3,7 @@ import { UserType } from '../../const/index.js';
 import { TUser, TUserType } from '../../types/index.js';
 import { defaultClasses, getModelForClass, modelOptions, prop } from '@typegoose/typegoose';
 import { createSHA256 } from '../../utils/index.js';
+import { Types } from 'mongoose';
 
 export interface UserEntity extends defaultClasses.Base {}
 
@@ -49,6 +50,12 @@ export class UserEntity extends defaultClasses.TimeStamps implements TUser {
     },
   })
   public userType: TUserType;
+
+  @prop({
+    type: Types.ObjectId,
+    default: [],
+  })
+  public favoriteOffers: Types.Array<Types.ObjectId>;
 
   @prop({
     required: true,

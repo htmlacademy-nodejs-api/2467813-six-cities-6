@@ -204,12 +204,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/offer'
+        '400':
+          description: id является недопустимым ObjectId
         '401':
           description: Токен недействителен или срок его действия истек.
         '404':
           description: Предложение с указанным идентификатором не найдено
 
-    put:
+    patch:
       tags:
         - offers
       summary: Редактирование предложения.
@@ -237,8 +239,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/offer'
+        '400':
+          description: id является недопустимым ObjectId
         '401':
           description: Токен недействителен или срок его действия истек.
+        '404':
+          description: Предложение с указанным идентификатором не найдено
 
     delete:
       tags:
@@ -262,10 +268,13 @@ paths:
             application/json:
               schema:
                 type: object
+        '400':
+          description: id является недопустимым ObjectId
         '401':
           description: Токен недействителен или срок его действия истек.
         '404':
           description: Предложение с указанным идентификатором не найдено
+
   /offers/premium/:
     get:
       tags:
@@ -308,6 +317,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: limit
+          in: query
+          description: limit
+          schema:
+            type: number
 
       responses:
         '200':
@@ -356,11 +370,15 @@ paths:
             application/json:
               schema:
                 type: object
+        '400':
+          description: id является недопустимым ObjectId
         '401':
           description: Токен недействителен или срок его действия истек.
+        '404':
+          description: Предложение с указанным идентификатором не найдено
 
   # COMMENTS
-  /comments/{offer_id}/:
+  /comments/{offer_id}/comments/:
     get:
       tags:
         - comments
@@ -369,6 +387,12 @@ paths:
         Сервис всегда возвращает список из 50 (или меньше) последних комментариев.
         Комментарии отсортированы по дате публикации (по убыванию). Сначала новые, потом старые.
         Комментарии могут запрашивать авторизованные и анонимные клиенты.
+      parameters:
+        - name: limit
+          in: query
+          description: limit
+          schema:
+            type: number
 
       responses:
         '200':
@@ -379,7 +403,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/comment'
-
+        '400':
+          description: id является недопустимым ObjectId
+        '404':
+          description: Предложение с указанным идентификатором не найдено
   /comments/:
     post:
       tags:
@@ -686,9 +713,9 @@ components:
       type: object
 
       properties:
-        description:
+        text:
           type: string
-          example: description
+          example: text
 
         rating:
           type: number

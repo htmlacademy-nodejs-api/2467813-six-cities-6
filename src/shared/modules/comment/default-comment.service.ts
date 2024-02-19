@@ -4,6 +4,7 @@ import { Component, SortTypeMongoDB } from '../../const/index.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { DEFAULT_COMMENT_COUNT } from './const/index.js';
 import { ILogger } from '../../libs/logger/index.js';
+import { Types } from 'mongoose';
 
 @injectable()
 export class DefaultCommentService implements ICommentService {
@@ -21,10 +22,45 @@ export class DefaultCommentService implements ICommentService {
   public async findByOfferId(offerId: string, count?: number): Promise<DocumentType<CommentEntity>[]> {
     const limit = count ?? DEFAULT_COMMENT_COUNT;
     return this.commentModel
-      .find({ offerId })
-      .sort({ createdAt: SortTypeMongoDB.Down })
-      .limit(limit)
-      .populate('userId')
+      .aggregate([
+        {
+          $match: {
+            offerId: new Types.ObjectId(offerId),
+          },
+        },
+        {
+          $sort: {
+            createdAt: SortTypeMongoDB.Down,
+          },
+        },
+        {
+          $limit: limit,
+        },
+        {
+          $set: {
+            publicationDate: '$createdAt',
+            id: '$_id',
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        {
+          $unwind: {
+            path: '$user',
+          },
+        },
+        {
+          $set: {
+            'user.id': '$user._id',
+          },
+        },
+      ])
       .exec();
   }
 
