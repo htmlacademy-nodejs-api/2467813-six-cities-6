@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { IMiddleware } from './middleware.interface.js';
 import { HttpError } from '../index.js';
 import { StatusCodes } from 'http-status-codes';
-import { IDocumentExists } from './document-exists.interface.js';
+import { IDocumentExists } from '../types/document-exists.interface.js';
 
 export class DocumentExistsMiddleware implements IMiddleware {
   constructor(

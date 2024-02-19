@@ -11,6 +11,7 @@ export type TRestSchema = {
   DB_MONGO_PASSWORD: string;
   DB_MONGO_PORT: string;
   DB_MONGO_NAME: string;
+  UPLOAD_DIRECTORY: string;
 };
 
 export const configRestSchema = convict<TRestSchema>({
@@ -55,5 +56,11 @@ export const configRestSchema = convict<TRestSchema>({
     format: String,
     env: 'DB_MONGO_NAME',
     default: 'six_cities',
+  },
+  UPLOAD_DIRECTORY: {
+    doc: 'Directory for upload files',
+    format: String,
+    env: 'UPLOAD_DIRECTORY',
+    default: null,
   },
 });
