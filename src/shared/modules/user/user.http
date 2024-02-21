@@ -9,7 +9,7 @@ Content-Type: application/json
   "name": "Mikhail",
   // avatarPath: 'mikhail.jpg',
   "userType": "обычный",
-  "password": "12"
+  "password": "123456"
 }
 
 ###
@@ -21,7 +21,7 @@ Content-Type: application/json
 
 {
   "email": "example@email.ru",
-  "password": "12"
+  "password": "123456"
 }
 
 ###

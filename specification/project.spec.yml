@@ -67,7 +67,7 @@ paths:
         required: true
 
       responses:
-        '201':
+        '200':
           description: Пользователь авторизован.
           content:
             application/json:
@@ -407,6 +407,7 @@ paths:
           description: id является недопустимым ObjectId
         '404':
           description: Предложение с указанным идентификатором не найдено
+
   /comments/:
     post:
       tags:

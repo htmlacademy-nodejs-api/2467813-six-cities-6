@@ -20,6 +20,7 @@ export class RestApplication {
     @inject(Component.UserController) private readonly userController: IController,
     @inject(Component.OfferController) private readonly offerController: IController,
     @inject(Component.CommentController) private readonly commentController: IController,
+    @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: IExceptionFilter,
   ) {
     this.portApp = this.config.get('PORT');
     this.server = express();
@@ -43,6 +44,7 @@ export class RestApplication {
   }
 
   private async initExceptionFilters() {
+    this.server.use(this.authExceptionFilter.catch.bind(this.authExceptionFilter));
     this.server.use(this.appExceptionFilter.catch.bind(this.appExceptionFilter));
   }
 
