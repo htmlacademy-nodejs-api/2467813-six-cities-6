@@ -20,6 +20,7 @@ import { fillDTO } from '../../utils/index.js';
 import { TParamOfferId } from './types/param-offerid.type.js';
 import { OFFER_CONTROLLER } from './const/index.js';
 import { TRequestQuery } from '../../libs/rest/types/request-query.type.js';
+import { PrivateRouteMiddleware } from '../../libs/rest/middleware/private-route.middleware.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -35,7 +36,7 @@ export class OfferController extends BaseController {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateOfferDto)],
+      middlewares: [new PrivateRouteMiddleware(), new ValidateDtoMiddleware(CreateOfferDto)],
     });
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     this.addRoute({
@@ -43,6 +44,7 @@ export class OfferController extends BaseController {
       method: HttpMethod.Patch,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('id'),
         new ValidateDtoMiddleware(UpdateOfferDto),
         new DocumentExistsMiddleware(this.offerService, 'offer', 'id'),
@@ -53,6 +55,7 @@ export class OfferController extends BaseController {
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('id'),
         new DocumentExistsMiddleware(this.offerService, 'offer', 'id'),
       ],
@@ -77,9 +80,9 @@ export class OfferController extends BaseController {
     });
   }
 
-  public async create({ body }: TCreateOfferRequest, res: Response): Promise<void> {
-    const result = await this.offerService.create(body);
-    this.created(res, fillDTO(OfferRdo, result));
+  public async create({ body, tokenPayload }: TCreateOfferRequest, res: Response): Promise<void> {
+    const offer = await this.offerService.create({ ...body, userId: tokenPayload.id });
+    this.created(res, fillDTO(OfferRdo, offer));
   }
 
   public async index({ query }: Request<unknown, unknown, unknown, TRequestQuery>, res: Response): Promise<void> {

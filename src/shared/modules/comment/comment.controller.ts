@@ -18,6 +18,7 @@ import { IOfferService } from '../offer/index.js';
 import { StatusCodes } from 'http-status-codes';
 import { TParamOfferId } from '../offer/types/param-offerid.type.js';
 import { OFFER_CONTROLLER } from '../offer/const/index.js';
+import { PrivateRouteMiddleware } from '../../libs/rest/middleware/private-route.middleware.js';
 
 @injectable()
 export class CommentController extends BaseController {
@@ -34,7 +35,7 @@ export class CommentController extends BaseController {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateCommentDto)],
+      middlewares: [new PrivateRouteMiddleware(), new ValidateDtoMiddleware(CreateCommentDto)],
     });
     this.addRoute({
       path: `/:id/${Path.Comments}/`,
@@ -47,12 +48,12 @@ export class CommentController extends BaseController {
     });
   }
 
-  public async create({ body }: CreateCommentRequest, res: Response): Promise<void> {
+  public async create({ body, tokenPayload }: CreateCommentRequest, res: Response): Promise<void> {
     if (!(await this.offerService.exists(body.offerId))) {
       throw new HttpError(StatusCodes.NOT_FOUND, `Offer with id ${body.offerId} not found.`, `${OFFER_CONTROLLER}`);
     }
 
-    const comment = await this.commentService.create(body);
+    const comment = await this.commentService.create({ ...body, userId: tokenPayload.id });
 
     this.created(res, fillDTO(CommentRdo, comment));
   }

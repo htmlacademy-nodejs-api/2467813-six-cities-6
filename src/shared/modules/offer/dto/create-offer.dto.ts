@@ -5,7 +5,6 @@ import {
   IsBoolean,
   IsIn,
   IsInt,
-  IsMongoId,
   IsNumber,
   IsString,
   IsUrl,
@@ -101,6 +100,5 @@ export class CreateOfferDto {
   @IsNumber({}, { message: CreateOfferValidationMessage.longitude.invalidFormat })
   public longitude: number;
 
-  @IsMongoId({ message: CreateOfferValidationMessage.userId.invalidId })
   public userId: string;
 }

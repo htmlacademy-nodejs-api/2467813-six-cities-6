@@ -88,7 +88,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -114,7 +114,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -165,7 +165,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -219,7 +219,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -256,7 +256,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -313,7 +313,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -346,7 +346,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -419,7 +419,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -429,7 +429,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/comment'
+              $ref: '#/components/schemas/createComment'
         required: true
 
       responses:
@@ -706,17 +706,13 @@ components:
           type: number
           example: 2.351499
 
-        userId:
-          type: string
-          example: 6329c3d6a04ab1061c6425ea
-
     comment:
       type: object
 
       properties:
         text:
           type: string
-          example: text
+          example: qwerty
 
         rating:
           type: number
@@ -725,6 +721,22 @@ components:
         userId:
           type: string
           example: 6329c3d6a04ab1061c6425ea
+
+        offerId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+    createComment:
+      type: object
+
+      properties:
+        text:
+          type: string
+          example: qwerty
+
+        rating:
+          type: number
+          example: 2
 
         offerId:
           type: string

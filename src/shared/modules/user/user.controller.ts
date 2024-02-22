@@ -23,6 +23,7 @@ import { StatusCodes } from 'http-status-codes';
 import { fillDTO } from '../../utils/index.js';
 import { USER_CONTROLLER } from './const/index.js';
 import { IAuthService } from '../auth/index.js';
+import { PrivateRouteMiddleware } from '../../libs/rest/middleware/private-route.middleware.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -48,7 +49,12 @@ export class UserController extends BaseController {
       middlewares: [new ValidateDtoMiddleware(LoginUserDto)],
     });
     this.addRoute({ path: `/${Path.Logout}/`, method: HttpMethod.Post, handler: this.logout });
-    this.addRoute({ path: `/${Path.CheckAuth}/`, method: HttpMethod.Get, handler: this.checkAuth });
+    this.addRoute({
+      path: `/${Path.CheckAuth}/`,
+      method: HttpMethod.Get,
+      handler: this.checkAuthenticate,
+      middlewares: [new PrivateRouteMiddleware()],
+    });
     this.addRoute({
       path: '/:userId/avatar',
       method: HttpMethod.Post,
@@ -85,8 +91,15 @@ export class UserController extends BaseController {
     throw new HttpError(StatusCodes.NOT_IMPLEMENTED, 'Not implemented', `${USER_CONTROLLER}`);
   }
 
-  public async checkAuth(_req: Request, _res: Response): Promise<void> {
-    throw new HttpError(StatusCodes.NOT_IMPLEMENTED, 'Not implemented', `${USER_CONTROLLER}`);
+  public async checkAuthenticate({ tokenPayload: { email } }: Request, res: Response): Promise<void> {
+    const foundedUser = await this.userService.findByEmail(email);
+
+    if (!foundedUser) {
+      throw new HttpError(StatusCodes.UNAUTHORIZED, 'Unauthorized', `${USER_CONTROLLER}`);
+    }
+
+    // FIXME:Поправить
+    this.ok(res, fillDTO(LoggedUserRdo, foundedUser));
   }
 
   public async uploadAvatar(req: Request, res: Response) {
