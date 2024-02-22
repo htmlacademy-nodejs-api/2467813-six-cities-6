@@ -7,14 +7,17 @@ export interface IOfferService extends IDocumentExists {
   create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>>;
   updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null>;
   deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
-  find(count?: number): Promise<DocumentType<OfferEntity>[]>;
+  find(
+    count?: number,
+    city?: string,
+    premium?: boolean,
+    favorite?: boolean,
+    userId?: string,
+  ): Promise<DocumentType<OfferEntity>[]>;
   findById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
-  findPremium(): Promise<DocumentType<OfferEntity>[]>;
   findFavorites(): Promise<DocumentType<OfferEntity>[]>;
   togglerFavorites(userId: string, offerId: string): Promise<boolean>;
 
-  // Инкремент комментария
-  incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   // Существование документа в базе данных
   exists(documentId: string): Promise<boolean>;
 }

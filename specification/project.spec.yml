@@ -115,11 +115,31 @@ paths:
         Для запроса комментариев к определённому предложению сервис предоставляет отдельный ресурс.
         Список предложений по аренде могут запрашивать анонимные и авторизованные клиенты.
       parameters:
+        - name: token
+          in: header
+          description: 'Token (формат: Bearer + "token")'
+          schema:
+            type: string
         - name: limit
           in: query
           description: limit
           schema:
             type: number
+        - name: city
+          in: query
+          description: city
+          schema:
+            type: string
+        - name: premium
+          in: query
+          description: premium
+          schema:
+            type: boolean
+        - name: favorite
+          in: query
+          description: favorite
+          schema:
+            type: boolean
 
       responses:
         '200':
@@ -130,7 +150,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/offer'
-
+        '401':
+          description: Токен недействителен или срок его действия истек.
     post:
       tags:
         - offers
@@ -248,33 +269,6 @@ paths:
           description: Токен недействителен или срок его действия истек.
         '404':
           description: Предложение с указанным идентификатором не найдено
-
-  /offers/premium/:
-    get:
-      tags:
-        - offers
-      summary: Список премиальные предложения для города.
-      description: Список премиальные предложения для города для определённого города.
-        Премиальное предложение — предложение с флагом «Premium».
-        Сервис возвращает не больше 3 предложений с флагом «Premium».
-        Список возвращаемых предложений отсортирован по дате публикации (по убыванию).
-        Ресурс доступен авторизованным и анонимным клиентам.
-      parameters:
-        - name: limit
-          in: query
-          description: limit
-          schema:
-            type: number
-
-      responses:
-        '200':
-          description: Список предложений по аренде.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/offer'
 
   /offers/favorites/:
     get:

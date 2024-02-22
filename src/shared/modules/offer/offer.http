@@ -69,8 +69,9 @@ Content-Type: application/json
 
 ## Добавление и удаление предложения в/из избранного
 
-PUT  http://localhost:3000/offers/65cccce5d5219b51301e7297/favorite/ HTTP/1.1
+PUT  http://localhost:3000/offers/65d732ceaaf4afc0752bd56f/favorite/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImV4YW1wbGVAZW1haWwucnUiLCJuYW1lIjoiTWlraGFpbCIsImlkIjoiNjVkNjQwOGRlOGVlYjhjZTY0YTgwMjJjIiwiaWF0IjoxNzA4NjAxOTM3LCJleHAiOjE3MDg2ODgzMzd9.xSO_u4IQbli5Kr68_BS70PETPvG-LmDpWPkJ0-8JSbU
 
 {
   "isFavorite": false

@@ -1,3 +1,6 @@
 export type TRequestQuery = {
-  limit?: number;
+  limit?: string;
+  city?: string;
+  premium?: string;
+  favorite?: string;
 };
