@@ -48,9 +48,8 @@ export class UserController extends BaseController {
       handler: this.login,
       middlewares: [new ValidateDtoMiddleware(LoginUserDto)],
     });
-    this.addRoute({ path: `/${Path.Logout}/`, method: HttpMethod.Post, handler: this.logout });
     this.addRoute({
-      path: `/${Path.CheckAuth}/`,
+      path: `/${Path.Login}/`,
       method: HttpMethod.Get,
       handler: this.checkAuthenticate,
       middlewares: [new PrivateRouteMiddleware()],
@@ -73,8 +72,8 @@ export class UserController extends BaseController {
       throw new HttpError(StatusCodes.CONFLICT, `User with email «${body.email}» exists.`, `${USER_CONTROLLER}`);
     }
 
-    const result = await this.userService.create(body, this.config.get('SALT'));
-    this.created(res, fillDTO(UserRdo, result));
+    const user = await this.userService.create(body, this.config.get('SALT'));
+    this.created(res, fillDTO(UserRdo, user));
   }
 
   public async login({ body }: LoginUserRequest, res: Response): Promise<void> {
@@ -87,10 +86,6 @@ export class UserController extends BaseController {
     this.ok(res, responseData);
   }
 
-  public async logout(_req: Request, _res: Response): Promise<void> {
-    throw new HttpError(StatusCodes.NOT_IMPLEMENTED, 'Not implemented', `${USER_CONTROLLER}`);
-  }
-
   public async checkAuthenticate({ tokenPayload: { email } }: Request, res: Response): Promise<void> {
     const foundedUser = await this.userService.findByEmail(email);
 
@@ -98,8 +93,7 @@ export class UserController extends BaseController {
       throw new HttpError(StatusCodes.UNAUTHORIZED, 'Unauthorized', `${USER_CONTROLLER}`);
     }
 
-    // FIXME:Поправить
-    this.ok(res, fillDTO(LoggedUserRdo, foundedUser));
+    this.ok(res, fillDTO(UserRdo, foundedUser));
   }
 
   public async uploadAvatar(req: Request, res: Response) {

@@ -9,7 +9,6 @@ export const Path = {
   Register: 'register',
   Login: 'login',
   Logout: 'logout',
-  CheckAuth: 'check_auth',
 } as const;
 
 export const AppRoutes = {

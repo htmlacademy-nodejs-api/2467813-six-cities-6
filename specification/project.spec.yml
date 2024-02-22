@@ -78,32 +78,6 @@ paths:
         '404':
           description: Пользователь не найден
 
-  /users/logout/:
-    post:
-      tags:
-        - users
-      summary: Завершения пользовательского сеанса.
-      description: Только если авторизация выполняется на основе сессий.
-        Если токен прошёл проверку, сервис завершает пользовательский сеанс (сессию)
-      parameters:
-        - name: token
-          in: header
-          description: 'Token (формат: Bearer + "token")'
-          required: true
-          schema:
-            type: string
-
-      responses:
-        '204':
-          description: Cервис завершает пользовательский сеанс (сессию).
-          content:
-            application/json:
-              schema:
-                type: object
-        '401':
-          description: Токен недействителен или срок его действия истек.
-
-  /users/check_auth/:
     get:
       tags:
         - users
@@ -620,6 +594,10 @@ components:
         commentCount:
           type: number
           example: 5
+
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
 
     createOffer:
       type: object
