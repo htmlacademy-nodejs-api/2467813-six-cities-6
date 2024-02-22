@@ -191,6 +191,12 @@ paths:
       description: Детальная информация по предложению.
         Детальная информация по предложению включает сведения о количестве комментариев. Сами комментарии не включены.
         Детальную информацию по предложению могут запрашивать авторизованные и анонимные клиенты.
+      parameters:
+        - name: token
+          in: header
+          description: 'Token (формат: Bearer + "token")'
+          schema:
+            type: string
 
       responses:
         '200':
@@ -270,39 +276,6 @@ paths:
         '404':
           description: Предложение с указанным идентификатором не найдено
 
-  /offers/favorites/:
-    get:
-      tags:
-        - offers
-      summary: Список избранных предложений.
-      description: Список избранных предложений, добавленных в избранное.
-        Сервис возвращает все предложения, добавленные в избранное.
-        Ресурс доступен только авторизованным клиентам.
-      parameters:
-        - name: token
-          in: header
-          description: 'Token (формат: Bearer + "token")'
-          required: true
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: limit
-          schema:
-            type: number
-
-      responses:
-        '200':
-          description: Список избранных предложений.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/offer'
-        '401':
-          description: Токен недействителен или срок его действия истек.
-
   /offers/{offer_id}/favorite/:
     put:
       tags:
@@ -338,6 +311,10 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  isFavorite:
+                    type: boolean
+                    example: false
         '400':
           description: id является недопустимым ObjectId
         '401':

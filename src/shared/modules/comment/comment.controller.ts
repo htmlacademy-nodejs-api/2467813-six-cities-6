@@ -64,7 +64,8 @@ export class CommentController extends BaseController {
   ): Promise<void> {
     const { id } = params;
     const { limit } = query;
-    const comments = await this.commentService.findByOfferId(id, !isNaN(Number(limit)) ? Number(limit) : undefined);
+    const count = limit === undefined ? undefined : Number(limit);
+    const comments = await this.commentService.findByOfferId(id, count);
     this.ok(res, fillDTO(CommentRdo, comments));
   }
 }

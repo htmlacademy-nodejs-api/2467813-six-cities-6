@@ -3,6 +3,7 @@ import {
   BaseController,
   DocumentExistsMiddleware,
   HttpError,
+  TRequestBody,
   ValidateDtoMiddleware,
   ValidateObjectIdMiddleware,
 } from '../../libs/rest/index.js';
@@ -97,7 +98,7 @@ export class OfferController extends BaseController {
     const town = city ?? undefined;
     const isPremium = premium === undefined ? undefined : premium === TRUE;
 
-    const isFavorite = favorite === TRUE ? favorite === TRUE : undefined;
+    const isFavorite = favorite === undefined ? undefined : favorite === TRUE;
     const userId = tokenPayload?.id;
 
     if (isFavorite && !userId) {
@@ -120,17 +121,22 @@ export class OfferController extends BaseController {
     this.noContent(res, offer);
   }
 
-  public async show({ params }: Request<TParamOfferId>, res: Response): Promise<void> {
+  public async show({ params, tokenPayload }: Request<TParamOfferId>, res: Response): Promise<void> {
     const { id } = params;
-    const offer = await this.offerService.findById(id);
+    const userId = tokenPayload?.id;
+    const offer = await this.offerService.findById(id, userId);
     this.ok(res, fillDTO(OfferRdo, offer));
   }
 
-  public async updateFavorite({ params, tokenPayload }: Request<TParamOfferId>, res: Response): Promise<void> {
+  public async updateFavorite(
+    { params, tokenPayload, body }: Request<TParamOfferId, TRequestBody, { isFavorite: string }>,
+    res: Response,
+  ): Promise<void> {
     const { id } = params;
+    const isFavorite = body.isFavorite === TRUE;
     const userId = tokenPayload.id;
 
-    const offer = await this.offerService.togglerFavorites(userId, id);
+    const offer = await this.offerService.togglerFavorites(userId, id, isFavorite);
 
     this.ok(res, {
       isFavorite: offer,

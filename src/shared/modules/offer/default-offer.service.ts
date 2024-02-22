@@ -11,6 +11,7 @@ import { Types } from 'mongoose';
 import { UserEntity } from '../user/index.js';
 import { HttpError } from '../../libs/rest/index.js';
 import { StatusCodes } from 'http-status-codes';
+import { CommentEntity } from '../comment/comment.entity.js';
 
 @injectable()
 export class DefaultOfferService implements IOfferService {
@@ -18,6 +19,7 @@ export class DefaultOfferService implements IOfferService {
     @inject(Component.Logger) private readonly logger: ILogger,
     @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>,
     @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>,
+    @inject(Component.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>,
   ) {}
 
   public async create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
@@ -31,35 +33,15 @@ export class DefaultOfferService implements IOfferService {
   }
 
   public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel.findByIdAndDelete(offerId).exec();
-    // FIXME: НЕ ПОЛУЧАЕТСЯ РЕШИТЬ КАСКАДНОЕ УДАЛЕНИЕ ЧЕРЕЗ ТРАНЗАКЦИЮ
-    // const session = await startSession();
-    // try {
-    //   session.startTransaction();
+    const deletedOffer = await this.offerModel.findByIdAndDelete(offerId).exec();
 
-    //   // Удаление предложения
-    //   const deletedOffer = await this.offerModel.findByIdAndDelete(offerId).session(session).exec();
+    if (deletedOffer) {
+      await this.commentModel.deleteMany({ offerId: new Types.ObjectId(offerId) }).exec();
+    }
 
-    //   // Если предложение удалено, удаляем связанные комментарии
-    //   if (deletedOffer) {
-    //     await this.commentModel
-    //       .deleteMany({ offerId: new Types.ObjectId(offerId) })
-    //       .session(session)
-    //       .exec();
-    //   }
-
-    //   // Завершение транзакции
-    //   await session.commitTransaction();
-    //   return deletedOffer;
-    // } catch (error) {
-    //   await session.abortTransaction();
-    //   throw error;
-    // } finally {
-    //   session.endSession();
-    // }
+    return deletedOffer;
   }
 
-  // FIXME:ПОПРАВИТЬ ИЗБРАННОЕ КАК БУДЕТ ДОСТУП ЧЕРЕЗ ТОКЕН
   public async find(
     count?: number,
     city?: string,
@@ -86,6 +68,31 @@ export class DefaultOfferService implements IOfferService {
       {
         $match: matchConditions,
       },
+    ];
+
+    if (favorite && userId) {
+      const user = await this.userModel.findById(userId);
+
+      if (user && user.favoriteOffers) {
+        aggregationPipeline.unshift({
+          $match: {
+            _id: {
+              $in: user.favoriteOffers,
+            },
+          },
+        });
+
+        aggregationPipeline.push({
+          $addFields: {
+            isFavorite: true,
+          },
+        });
+      } else {
+        return [];
+      }
+    }
+
+    aggregationPipeline.push(
       {
         $sort: {
           createdAt: SortTypeMongoDB.Down,
@@ -94,29 +101,6 @@ export class DefaultOfferService implements IOfferService {
       {
         $limit: limit,
       },
-    ];
-
-    // Если нужно фильтровать избранные предложения
-    if (favorite && userId) {
-      // Получаем массив избранных предложений пользователя
-      const user = await this.userModel.findById(userId); // userModel - это модель пользователя в вашей системе
-
-      if (user && user.favoriteOffers) {
-        // Добавляем условие для фильтрации избранных предложений
-        aggregationPipeline.unshift({
-          $match: {
-            _id: {
-              $in: user.favoriteOffers,
-            },
-          },
-        });
-      } else {
-        // Если у пользователя нет избранных предложений или пользователь не найден, возвращаем пустой массив
-        return [];
-      }
-    }
-
-    aggregationPipeline.push(
       {
         $lookup: {
           from: 'comments',
@@ -165,69 +149,82 @@ export class DefaultOfferService implements IOfferService {
     return this.offerModel.aggregate(aggregationPipeline).exec();
   }
 
-  // FIXME:ПОПРАВИТЬ ИЗБРАННОЕ КАК БУДЕТ ДОСТУП ЧЕРЕЗ ТОКЕН
-  public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    const offers = await this.offerModel
-      .aggregate([
-        {
-          $match: { _id: new Types.ObjectId(offerId) },
-        },
-        {
-          $lookup: {
-            from: 'comments',
-            localField: '_id',
-            foreignField: 'offerId',
-            as: 'comments',
-          },
-        },
-        {
-          $set: {
-            commentCount: {
-              $size: '$comments',
+  public async findById(offerId: string, userId?: string): Promise<DocumentType<OfferEntity> | null> {
+    const aggregationPipeline: any = [
+      {
+        $match: { _id: new Types.ObjectId(offerId) },
+      },
+    ];
+
+    if (userId) {
+      const user = await this.userModel.findById(userId);
+
+      if (user && user.favoriteOffers) {
+        aggregationPipeline.unshift({
+          $match: {
+            _id: {
+              $in: user.favoriteOffers,
             },
-            rating: {
-              $avg: '$comments.rating',
-            },
-            publicationDate: '$createdAt',
           },
-        },
-        {
-          $lookup: {
-            from: 'users',
-            localField: 'userId',
-            foreignField: '_id',
-            as: 'user',
+        });
+
+        aggregationPipeline.push({
+          $addFields: {
+            isFavorite: true,
           },
+        });
+      }
+    }
+
+    aggregationPipeline.push(
+      {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'offerId',
+          as: 'comments',
         },
-        {
-          $project: {
-            comments: 0,
+      },
+      {
+        $set: {
+          commentCount: {
+            $size: '$comments',
           },
-        },
-        {
-          $unwind: '$user',
-        },
-        {
-          $set: {
-            'user.id': '$user._id',
+          rating: {
+            $avg: '$comments.rating',
           },
+          publicationDate: '$createdAt',
         },
-      ])
-      .exec();
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $project: {
+          comments: 0,
+        },
+      },
+      {
+        $unwind: '$user',
+      },
+      {
+        $set: {
+          'user.id': '$user._id',
+        },
+      },
+    );
+
+    const offers = await this.offerModel.aggregate(aggregationPipeline).exec();
 
     return offers.length > 0 ? offers[0] : null;
   }
 
-  public async findFavorites(count?: number): Promise<DocumentType<OfferEntity>[]> {
-    const limit = count ?? OfferCount.common;
-    return this.offerModel
-      .find({ isFavorite: true }, {}, { limit })
-      .sort({ createdAt: SortTypeMongoDB.Down })
-      .populate(['userId'])
-      .exec();
-  }
-
-  public async togglerFavorites(userId: string, offerId: string): Promise<boolean> {
+  public async togglerFavorites(userId: string, offerId: string, isFavorite: boolean): Promise<boolean> {
     const user = await this.userModel.findById(userId).exec();
 
     if (!user) {
@@ -235,9 +232,9 @@ export class DefaultOfferService implements IOfferService {
     }
 
     const offerObjectId = new Types.ObjectId(offerId);
-    const isFavorite = user.favoriteOffers.includes(offerObjectId);
+    // const isFavorite = user.favoriteOffers.includes(offerObjectId);
 
-    if (isFavorite) {
+    if (!isFavorite) {
       // Если предложение уже в избранном, удаляем его
       user.favoriteOffers.pull(offerObjectId);
 
