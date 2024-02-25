@@ -4,8 +4,8 @@ import { resolve } from 'node:path';
 import { ICommand } from './cli/commands/command.interface.js';
 import { CLIApplication } from './cli/index.js';
 import { glob } from 'glob';
-import { isCommand } from './cli/utils/index.js';
 import { PATH_COMMAND } from './cli/const/index.js';
+import { isCommand } from './cli/utils/index.js';
 
 async function bootstrap() {
   const cliApplication = new CLIApplication();

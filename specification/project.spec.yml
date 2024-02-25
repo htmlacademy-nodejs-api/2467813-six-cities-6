@@ -67,7 +67,7 @@ paths:
         required: true
 
       responses:
-        '201':
+        '200':
           description: Пользователь авторизован.
           content:
             application/json:
@@ -78,32 +78,6 @@ paths:
         '404':
           description: Пользователь не найден
 
-  /users/logout/:
-    post:
-      tags:
-        - users
-      summary: Завершения пользовательского сеанса.
-      description: Только если авторизация выполняется на основе сессий.
-        Если токен прошёл проверку, сервис завершает пользовательский сеанс (сессию)
-      parameters:
-        - name: token
-          in: header
-          description: 'Token (формат: JWT + "token")'
-          required: true
-          schema:
-            type: string
-
-      responses:
-        '204':
-          description: Cервис завершает пользовательский сеанс (сессию).
-          content:
-            application/json:
-              schema:
-                type: object
-        '401':
-          description: Токен недействителен или срок его действия истек.
-
-  /users/check_auth/:
     get:
       tags:
         - users
@@ -114,7 +88,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -141,11 +115,31 @@ paths:
         Для запроса комментариев к определённому предложению сервис предоставляет отдельный ресурс.
         Список предложений по аренде могут запрашивать анонимные и авторизованные клиенты.
       parameters:
+        - name: token
+          in: header
+          description: 'Token (формат: Bearer + "token")'
+          schema:
+            type: string
         - name: limit
           in: query
           description: limit
           schema:
             type: number
+        - name: city
+          in: query
+          description: city
+          schema:
+            type: string
+        - name: premium
+          in: query
+          description: premium
+          schema:
+            type: boolean
+        - name: favorite
+          in: query
+          description: favorite
+          schema:
+            type: boolean
 
       responses:
         '200':
@@ -156,7 +150,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/offer'
-
+        '401':
+          description: Токен недействителен или срок его действия истек.
     post:
       tags:
         - offers
@@ -165,7 +160,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -196,6 +191,12 @@ paths:
       description: Детальная информация по предложению.
         Детальная информация по предложению включает сведения о количестве комментариев. Сами комментарии не включены.
         Детальную информацию по предложению могут запрашивать авторизованные и анонимные клиенты.
+      parameters:
+        - name: token
+          in: header
+          description: 'Token (формат: Bearer + "token")'
+          schema:
+            type: string
 
       responses:
         '200':
@@ -219,7 +220,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -256,7 +257,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -275,66 +276,6 @@ paths:
         '404':
           description: Предложение с указанным идентификатором не найдено
 
-  /offers/premium/:
-    get:
-      tags:
-        - offers
-      summary: Список премиальные предложения для города.
-      description: Список премиальные предложения для города для определённого города.
-        Премиальное предложение — предложение с флагом «Premium».
-        Сервис возвращает не больше 3 предложений с флагом «Premium».
-        Список возвращаемых предложений отсортирован по дате публикации (по убыванию).
-        Ресурс доступен авторизованным и анонимным клиентам.
-      parameters:
-        - name: limit
-          in: query
-          description: limit
-          schema:
-            type: number
-
-      responses:
-        '200':
-          description: Список предложений по аренде.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/offer'
-
-  /offers/favorites/:
-    get:
-      tags:
-        - offers
-      summary: Список избранных предложений.
-      description: Список избранных предложений, добавленных в избранное.
-        Сервис возвращает все предложения, добавленные в избранное.
-        Ресурс доступен только авторизованным клиентам.
-      parameters:
-        - name: token
-          in: header
-          description: 'Token (формат: JWT + "token")'
-          required: true
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: limit
-          schema:
-            type: number
-
-      responses:
-        '200':
-          description: Список избранных предложений.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/offer'
-        '401':
-          description: Токен недействителен или срок его действия истек.
-
   /offers/{offer_id}/favorite/:
     put:
       tags:
@@ -346,7 +287,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -370,6 +311,10 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  isFavorite:
+                    type: boolean
+                    example: false
         '400':
           description: id является недопустимым ObjectId
         '401':
@@ -407,6 +352,7 @@ paths:
           description: id является недопустимым ObjectId
         '404':
           description: Предложение с указанным идентификатором не найдено
+
   /comments/:
     post:
       tags:
@@ -418,7 +364,7 @@ paths:
       parameters:
         - name: token
           in: header
-          description: 'Token (формат: JWT + "token")'
+          description: 'Token (формат: Bearer + "token")'
           required: true
           schema:
             type: string
@@ -428,7 +374,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/comment'
+              $ref: '#/components/schemas/createComment'
         required: true
 
       responses:
@@ -620,6 +566,10 @@ components:
           type: number
           example: 5
 
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
     createOffer:
       type: object
 
@@ -705,17 +655,13 @@ components:
           type: number
           example: 2.351499
 
-        userId:
-          type: string
-          example: 6329c3d6a04ab1061c6425ea
-
     comment:
       type: object
 
       properties:
         text:
           type: string
-          example: text
+          example: qwerty
 
         rating:
           type: number
@@ -724,6 +670,22 @@ components:
         userId:
           type: string
           example: 6329c3d6a04ab1061c6425ea
+
+        offerId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+    createComment:
+      type: object
+
+      properties:
+        text:
+          type: string
+          example: qwerty
+
+        rating:
+          type: number
+          example: 2
 
         offerId:
           type: string

@@ -157,6 +157,8 @@ DB_MONGO_PORT=value - Порт пользователя в базе данных
 DB_MONGO_NAME=value - Название базы данных (MongoDB)
 
 UPLOAD_DIRECTORY=value - Каталог для загрузки файлов
+
+JWT_SECRET=value - Секрет для знака JWT
 ```
 
 ### Остальное

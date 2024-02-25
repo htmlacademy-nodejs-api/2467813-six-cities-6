@@ -10,6 +10,7 @@ import { DefaultOfferService, IOfferService, OfferModel } from '../../shared/mod
 import { IDatabaseClient, MongoDatabaseClient } from '../../shared/libs/database-client/index.js';
 import { ConsoleLogger, ILogger } from '../../shared/libs/logger/index.js';
 import Table from 'cli-table';
+import { CommentModel } from '../../shared/modules/comment/index.js';
 
 export class ImportCommand implements ICommand {
   private listOffers: TOffer[] = [];
@@ -26,7 +27,7 @@ export class ImportCommand implements ICommand {
 
     this.table = table;
     this.logger = new ConsoleLogger();
-    this.offerService = new DefaultOfferService(this.logger, UserModel, OfferModel);
+    this.offerService = new DefaultOfferService(this.logger, UserModel, OfferModel, CommentModel);
     this.userService = new DefaultUserService(this.logger, UserModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }

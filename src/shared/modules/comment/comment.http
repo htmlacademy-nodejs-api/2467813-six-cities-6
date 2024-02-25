@@ -3,17 +3,17 @@
 
 POST http://localhost:3000/comments/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImV4YW1wbGVAZW1haWwucnUiLCJuYW1lIjoiTWlraGFpbCIsImlkIjoiNjVkNzk1MzU5YTliOGEzOTgzNWZkMDhkIiwiaWF0IjoxNzA4NjI3Mjg3LCJleHAiOjE3MDg3MTM2ODd9.RO1ANUMzFzvwWLKCQuha7HPpYJnjHeP-igJTdxLEsao
 
 {
-  "text": "qwerty test",
+  "text": "qwerty 2",
   "rating": 2,
-  "offerId": "65d0aabf2a3771b3bd5c6b03",
-  "userId": "65d0a425f9edd529dc99adfb"
+  "offerId": "65d7a674515b77b50a2de197"
 }
 
 ###
 
 ## Список комментариев для предложения
 
-GET http://localhost:3000/comments/65d0aabf2a3771b3bd5c6b01/comments/ HTTP/1.1
+GET http://localhost:3000/comments/65d7a674515b77b50a2de197/comments/ HTTP/1.1
 Content-Type: application/json

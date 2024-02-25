@@ -9,7 +9,7 @@ Content-Type: application/json
   "name": "Mikhail",
   // avatarPath: 'mikhail.jpg',
   "userType": "обычный",
-  "password": "12"
+  "password": "123456"
 }
 
 ###
@@ -21,24 +21,16 @@ Content-Type: application/json
 
 {
   "email": "example@email.ru",
-  "password": "12"
+  "password": "123456"
 }
-
-###
-
-## Завершения пользовательского сеанса.
-
-POST  http://localhost:3000/users/logout/ HTTP/1.1
-Content-Type: application/json
-
-{}
 
 ###
 
 ## Проверка состояния пользователя.
 
-GET  http://localhost:3000/users/check_auth/ HTTP/1.1
+GET  http://localhost:3000/users/login/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImV4YW1wbGVAZW1haWwucnUiLCJuYW1lIjoiTWlraGFpbCIsImlkIjoiNjVkNzk1MzU5YTliOGEzOTgzNWZkMDhkIiwiaWF0IjoxNzA4NjI3Mjg3LCJleHAiOjE3MDg3MTM2ODd9.RO1ANUMzFzvwWLKCQuha7HPpYJnjHeP-igJTdxLEsao
 
 ###
 
@@ -54,4 +46,4 @@ Content-Type: image/png
 < C:\Users\User\Downloads\1.jpg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
-##
+###

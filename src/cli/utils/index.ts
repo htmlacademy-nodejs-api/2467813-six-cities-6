@@ -1,2 +1,2 @@
-export * from './isPackageJSONConfig.js';
-export * from './isICommand.js';
+export * from './is-package-json-config.guard.js';
+export * from './is-сommand.guard.js';

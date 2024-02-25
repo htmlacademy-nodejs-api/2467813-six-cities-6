@@ -9,7 +9,6 @@ export const Path = {
   Register: 'register',
   Login: 'login',
   Logout: 'logout',
-  CheckAuth: 'check_auth',
 } as const;
 
 export const AppRoutes = {
@@ -33,6 +32,8 @@ export const Component = {
   UserController: Symbol.for('UserController'),
   OfferController: Symbol.for('OfferController'),
   CommentController: Symbol.for('CommentController'),
+  AuthService: Symbol.for('AuthService'),
+  AuthExceptionFilter: Symbol.for('AuthExceptionFilter'),
 } as const;
 
 export const HttpMethod = {
