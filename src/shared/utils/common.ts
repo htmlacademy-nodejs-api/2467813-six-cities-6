@@ -1,4 +1,6 @@
 import { ClassConstructor, plainToInstance } from 'class-transformer';
+import { TApplicationError, TValidationErrorField } from '../libs/rest/index.js';
+import { ValidationError } from 'class-validator';
 
 // для получения случайного числа в диапазоне
 export function generateRandomValue(min: number, max: number, numAfterDigit = 0) {
@@ -26,11 +28,24 @@ export function getErrorMessage(error: unknown): string {
 }
 
 export function fillDTO<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
-  return plainToInstance(someDto, plainObject, { excludeExtraneousValues: true, enableImplicitConversion: true });
+  return plainToInstance(someDto, plainObject, {
+    excludeExtraneousValues: true,
+    enableImplicitConversion: true,
+  });
 }
 
-export function createErrorObject(message: string) {
+export function createErrorObject(errorType: TApplicationError, error: string, details: TValidationErrorField[] = []) {
   return {
-    error: message,
+    errorType,
+    error,
+    details,
   };
+}
+
+export function reduceValidationErrors(errors: ValidationError[]): TValidationErrorField[] {
+  return errors.map(({ property, value, constraints }) => ({
+    property,
+    value,
+    messages: constraints ? Object.values(constraints) : [],
+  }));
 }
