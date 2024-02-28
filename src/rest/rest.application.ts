@@ -1,9 +1,9 @@
 import { inject, injectable } from 'inversify';
 import { IConfig, TRestSchema } from '../shared/config/index.js';
 import { ILogger } from '../shared/libs/logger/index.js';
-import { AppRoutes, Component } from '../shared/const/index.js';
+import { AppRoutes, Component, StaticPath } from '../shared/const/index.js';
 import { IDatabaseClient } from '../shared/libs/database-client/index.js';
-import { getMongoURI } from '../shared/utils/index.js';
+import { getFullServerPath, getMongoURI } from '../shared/utils/index.js';
 import express, { Express } from 'express';
 import { IController, IExceptionFilter } from '../shared/libs/rest/index.js';
 import { ParseTokenMiddleware } from '../shared/libs/rest/middleware/parse-token.middleware.js';
@@ -12,6 +12,7 @@ import { ParseTokenMiddleware } from '../shared/libs/rest/middleware/parse-token
 export class RestApplication {
   private readonly server: Express;
   private readonly portApp: number;
+  private readonly hostApp: string;
 
   constructor(
     @inject(Component.Logger) private readonly logger: ILogger,
@@ -25,6 +26,7 @@ export class RestApplication {
     @inject(Component.HttpExceptionFilter) private readonly httpExceptionFilter: IExceptionFilter,
     @inject(Component.ValidationExceptionFilter) private readonly validationExceptionFilter: IExceptionFilter,
   ) {
+    this.hostApp = this.config.get('HOST');
     this.portApp = this.config.get('PORT');
     this.server = express();
   }
@@ -45,7 +47,8 @@ export class RestApplication {
     const authenticateMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
 
     this.server.use(express.json());
-    this.server.use('/upload', express.static(this.config.get('UPLOAD_DIRECTORY')));
+    this.server.use(StaticPath.Upload, express.static(this.config.get('UPLOAD_DIRECTORY')));
+    this.server.use(StaticPath.Files, express.static(this.config.get('STATIC_DIRECTORY_PATH')));
     this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
   }
 
@@ -68,6 +71,7 @@ export class RestApplication {
 
   public async init() {
     this.logger.info('Application initialization');
+    this.logger.info(`Get value from env $HOST: ${this.hostApp}`);
     this.logger.info(`Get value from env $PORT: ${this.portApp}`);
 
     this.logger.info('Init database...');
@@ -88,6 +92,6 @@ export class RestApplication {
 
     this.logger.info('Try to init server...');
     await this.initServer();
-    this.logger.info(`Server started on http://localhost:${this.portApp}`);
+    this.logger.info(`Server started on ${getFullServerPath(this.hostApp, this.portApp)}`);
   }
 }

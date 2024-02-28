@@ -3,6 +3,11 @@ export const TRUE = 'true';
 export const FUNCTION = 'function';
 export const LOG_FILE_PATH = 'logs/rest.log';
 
+export const StaticPath = {
+  Upload: '/upload',
+  Files: '/static',
+} as const;
+
 export const Path = {
   Comments: 'comments',
   Favorite: 'favorite',
@@ -36,6 +41,7 @@ export const Component = {
   AuthExceptionFilter: Symbol.for('AuthExceptionFilter'),
   HttpExceptionFilter: Symbol.for('HttpExceptionFilter'),
   ValidationExceptionFilter: Symbol.for('ValidationExceptionFilter'),
+  PathTransformer: Symbol.for('PathTransformer'),
 } as const;
 
 export const HttpMethod = {
