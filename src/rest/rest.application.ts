@@ -7,6 +7,7 @@ import { getFullServerPath, getMongoURI } from '../shared/utils/index.js';
 import express, { Express } from 'express';
 import { IController, IExceptionFilter } from '../shared/libs/rest/index.js';
 import { ParseTokenMiddleware } from '../shared/libs/rest/middleware/parse-token.middleware.js';
+import cors from 'cors';
 
 @injectable()
 export class RestApplication {
@@ -50,6 +51,7 @@ export class RestApplication {
     this.server.use(StaticPath.Upload, express.static(this.config.get('UPLOAD_DIRECTORY')));
     this.server.use(StaticPath.Files, express.static(this.config.get('STATIC_DIRECTORY_PATH')));
     this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
+    this.server.use(cors());
   }
 
   private async initExceptionFilters() {
