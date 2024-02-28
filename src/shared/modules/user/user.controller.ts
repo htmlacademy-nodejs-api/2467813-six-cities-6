@@ -16,6 +16,7 @@ import {
   LoggedUserRdo,
   LoginUserDto,
   LoginUserRequest,
+  UploadUserAvatarRdo,
   UserRdo,
 } from './index.js';
 import { IConfig, TRestSchema } from '../../config/index.js';
@@ -55,11 +56,12 @@ export class UserController extends BaseController {
       middlewares: [new PrivateRouteMiddleware()],
     });
     this.addRoute({
-      path: '/:userId/avatar',
+      path: '/:id/avatar/',
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
       middlewares: [
-        new ValidateObjectIdMiddleware('userId'),
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('id'),
         new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY'), 'avatar'),
       ],
     });
@@ -79,11 +81,9 @@ export class UserController extends BaseController {
   public async login({ body }: LoginUserRequest, res: Response): Promise<void> {
     const user = await this.authService.verify(body);
     const token = await this.authService.authenticate(user);
-    const responseData = fillDTO(LoggedUserRdo, {
-      token,
-    });
 
-    this.ok(res, responseData);
+    const responseData = fillDTO(LoggedUserRdo, user);
+    this.ok(res, Object.assign(responseData, { token }));
   }
 
   public async checkAuthenticate({ tokenPayload: { email } }: Request, res: Response): Promise<void> {
@@ -96,9 +96,10 @@ export class UserController extends BaseController {
     this.ok(res, fillDTO(UserRdo, foundedUser));
   }
 
-  public async uploadAvatar(req: Request, res: Response) {
-    this.created(res, {
-      filepath: req.file?.path,
-    });
+  public async uploadAvatar({ params, file }: Request, res: Response) {
+    const { id } = params;
+    const uploadFile = { avatarPath: file?.filename };
+    await this.userService.updateById(id, uploadFile);
+    this.created(res, fillDTO(UploadUserAvatarRdo, { filepath: uploadFile.avatarPath }));
   }
 }

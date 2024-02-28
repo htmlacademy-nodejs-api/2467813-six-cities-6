@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { inject, injectable } from 'inversify';
 import { Component, SortTypeMongoDB } from '../../const/index.js';
 import { IOfferService } from './offer-service.interface.js';
@@ -7,11 +6,12 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { CreateOfferDto, OfferEntity } from './index.js';
 import { OfferCount } from './const/index.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
-import { Types } from 'mongoose';
+import { PipelineStage, Types } from 'mongoose';
 import { UserEntity } from '../user/index.js';
 import { HttpError } from '../../libs/rest/index.js';
 import { StatusCodes } from 'http-status-codes';
 import { CommentEntity } from '../comment/comment.entity.js';
+import { TMatchConditions } from './types/match-conditions.type.js';
 
 @injectable()
 export class DefaultOfferService implements IOfferService {
@@ -27,6 +27,51 @@ export class DefaultOfferService implements IOfferService {
     this.logger.info(`New offer created: ${dto.title}`);
     return offer;
   }
+
+  private commentAndUsersPipeline = [
+    {
+      $lookup: {
+        from: 'comments',
+        localField: '_id',
+        foreignField: 'offerId',
+        as: 'comments',
+      },
+    },
+    {
+      $set: {
+        commentCount: {
+          $size: '$comments',
+        },
+        rating: {
+          $avg: '$comments.rating',
+        },
+        publicationDate: '$createdAt',
+        id: '$_id',
+      },
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'userId',
+        foreignField: '_id',
+        as: 'user',
+      },
+    },
+
+    {
+      $project: {
+        comments: 0,
+      },
+    },
+    {
+      $unwind: '$user',
+    },
+    {
+      $set: {
+        'user.id': '$user._id',
+      },
+    },
+  ];
 
   public async updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel.findByIdAndUpdate(offerId, dto, { new: true }).populate(['userId']).exec();
@@ -49,22 +94,19 @@ export class DefaultOfferService implements IOfferService {
     favorite?: boolean,
     userId?: string,
   ): Promise<DocumentType<OfferEntity>[]> {
-    let limit = count ?? OfferCount.common;
+    const limit = premium ? OfferCount.premium : count ?? OfferCount.common;
 
-    const matchConditions: any = {};
+    const matchConditions: TMatchConditions = {};
 
     if (city) {
       matchConditions.city = city;
     }
 
-    if (premium) {
-      limit = OfferCount.premium;
-      matchConditions.isPremium = true;
-    } else if (premium === false) {
-      matchConditions.isPremium = false;
+    if (premium !== undefined) {
+      matchConditions.isPremium = premium;
     }
 
-    const aggregationPipeline: any = [
+    const aggregationPipeline: PipelineStage[] = [
       {
         $match: matchConditions,
       },
@@ -83,12 +125,10 @@ export class DefaultOfferService implements IOfferService {
         });
 
         aggregationPipeline.push({
-          $addFields: {
+          $set: {
             isFavorite: true,
           },
         });
-      } else {
-        return [];
       }
     }
 
@@ -101,58 +141,18 @@ export class DefaultOfferService implements IOfferService {
       {
         $limit: limit,
       },
-      {
-        $lookup: {
-          from: 'comments',
-          localField: '_id',
-          foreignField: 'offerId',
-          as: 'comments',
-        },
-      },
-      {
-        $set: {
-          commentCount: {
-            $size: '$comments',
-          },
-          rating: {
-            $avg: '$comments.rating',
-          },
-          publicationDate: '$createdAt',
-          id: '$_id',
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'user',
-        },
-      },
-      {
-        $unwind: {
-          path: '$user',
-        },
-      },
-      {
-        $set: {
-          'user.id': '$user._id',
-        },
-      },
-      {
-        $project: {
-          comments: 0,
-        },
-      },
+      ...this.commentAndUsersPipeline,
     );
 
     return this.offerModel.aggregate(aggregationPipeline).exec();
   }
 
   public async findById(offerId: string, userId?: string): Promise<DocumentType<OfferEntity> | null> {
-    const aggregationPipeline: any = [
+    const aggregationPipeline: PipelineStage[] = [
       {
-        $match: { _id: new Types.ObjectId(offerId) },
+        $match: {
+          _id: new Types.ObjectId(offerId),
+        },
       },
     ];
 
@@ -169,55 +169,14 @@ export class DefaultOfferService implements IOfferService {
         });
 
         aggregationPipeline.push({
-          $addFields: {
+          $set: {
             isFavorite: true,
           },
         });
       }
     }
 
-    aggregationPipeline.push(
-      {
-        $lookup: {
-          from: 'comments',
-          localField: '_id',
-          foreignField: 'offerId',
-          as: 'comments',
-        },
-      },
-      {
-        $set: {
-          commentCount: {
-            $size: '$comments',
-          },
-          rating: {
-            $avg: '$comments.rating',
-          },
-          publicationDate: '$createdAt',
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'user',
-        },
-      },
-      {
-        $project: {
-          comments: 0,
-        },
-      },
-      {
-        $unwind: '$user',
-      },
-      {
-        $set: {
-          'user.id': '$user._id',
-        },
-      },
-    );
+    aggregationPipeline.push(...this.commentAndUsersPipeline);
 
     const offers = await this.offerModel.aggregate(aggregationPipeline).exec();
 
@@ -232,16 +191,13 @@ export class DefaultOfferService implements IOfferService {
     }
 
     const offerObjectId = new Types.ObjectId(offerId);
-    // const isFavorite = user.favoriteOffers.includes(offerObjectId);
 
     if (!isFavorite) {
-      // Если предложение уже в избранном, удаляем его
       user.favoriteOffers.pull(offerObjectId);
 
       await user.save();
       return false;
     } else {
-      // Если предложения нет в избранном, добавляем его
       user.favoriteOffers.push(offerObjectId);
 
       await user.save();

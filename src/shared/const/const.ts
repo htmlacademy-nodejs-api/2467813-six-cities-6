@@ -3,6 +3,11 @@ export const TRUE = 'true';
 export const FUNCTION = 'function';
 export const LOG_FILE_PATH = 'logs/rest.log';
 
+export const StaticPath = {
+  Upload: '/upload',
+  Files: '/static',
+} as const;
+
 export const Path = {
   Comments: 'comments',
   Favorite: 'favorite',
@@ -34,6 +39,9 @@ export const Component = {
   CommentController: Symbol.for('CommentController'),
   AuthService: Symbol.for('AuthService'),
   AuthExceptionFilter: Symbol.for('AuthExceptionFilter'),
+  HttpExceptionFilter: Symbol.for('HttpExceptionFilter'),
+  ValidationExceptionFilter: Symbol.for('ValidationExceptionFilter'),
+  PathTransformer: Symbol.for('PathTransformer'),
 } as const;
 
 export const HttpMethod = {
@@ -116,4 +124,9 @@ export const ListCities = [
 export const SortTypeMongoDB = {
   Down: -1,
   Up: 1,
+} as const;
+
+export const Retry = {
+  count: 5,
+  timeout: 1000,
 } as const;

@@ -6,8 +6,8 @@ import { IUserService, LoginUserDto, UserEntity } from '../user/index.js';
 import { IConfig, TRestSchema } from '../../config/index.js';
 import crypto from 'node:crypto';
 import { SignJWT } from 'jose';
-import { JWT_ALGORITHM, JWT_EXPIRED } from './const/index.js';
 import { UserNotFoundException, UserPasswordIncorrectException } from './errors/index.js';
+import { Jwt } from './const/index.js';
 
 @injectable()
 export class DefaultAuthService implements IAuthService {
@@ -28,9 +28,9 @@ export class DefaultAuthService implements IAuthService {
 
     this.logger.info(`Create token for ${user.email}`);
     return new SignJWT(tokenPayload)
-      .setProtectedHeader({ alg: JWT_ALGORITHM })
+      .setProtectedHeader({ alg: Jwt.algorithmHs256 })
       .setIssuedAt()
-      .setExpirationTime(JWT_EXPIRED)
+      .setExpirationTime(Jwt.expired)
       .sign(secretKey);
   }
 

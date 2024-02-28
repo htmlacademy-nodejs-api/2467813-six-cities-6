@@ -1,4 +1,4 @@
-import { IsEmail, IsIn, IsOptional, IsString, Length } from 'class-validator';
+import { IsEmail, IsIn, IsString, Length } from 'class-validator';
 import { TUserType } from '../../../types/index.js';
 import { CreateUserMessages } from '../const/index.js';
 import { UserType } from '../../../const/index.js';
@@ -10,10 +10,6 @@ export class CreateUserDto {
 
   @IsEmail({}, { message: CreateUserMessages.email.invalidFormat })
   public email: string;
-
-  @IsOptional()
-  @IsString({ message: CreateUserMessages.avatarPath.invalidFormat })
-  public avatarPath?: string;
 
   @IsIn([UserType.simple, UserType.pro], {
     message: CreateUserMessages.userType.invalidFormat,

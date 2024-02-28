@@ -159,6 +159,10 @@ DB_MONGO_NAME=value - Название базы данных (MongoDB)
 UPLOAD_DIRECTORY=value - Каталог для загрузки файлов
 
 JWT_SECRET=value - Секрет для знака JWT
+
+HOST=value - Хост, на котором запущена служба
+
+STATIC_DIRECTORY_PATH=value - Путь к каталогу со статическими ресурсами
 ```
 
 ### Остальное

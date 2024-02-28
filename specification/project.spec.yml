@@ -72,7 +72,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/token'
+                $ref: '#/components/schemas/loggedUser'
         '401':
           description: Логин или пароль неверный или пользователь не существует.
         '404':
@@ -463,6 +463,33 @@ components:
         token:
           type: string
           example: token
+
+    loggedUser:
+      type: object
+
+      properties:
+        token:
+          type: string
+          example: token
+
+        name:
+          type: string
+          example: Mikhail
+
+        email:
+          type: string
+          example: example@example.ru
+
+        avatarPath:
+          type: string
+          example: example-path.png
+
+        userType:
+          enum:
+            - обычный
+            - pro
+          type: string
+          example: обычный
 
     offer:
       type: object
