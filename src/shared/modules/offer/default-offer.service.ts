@@ -193,13 +193,11 @@ export class DefaultOfferService implements IOfferService {
     const offerObjectId = new Types.ObjectId(offerId);
 
     if (!isFavorite) {
-      // Если предложение уже в избранном, удаляем его
       user.favoriteOffers.pull(offerObjectId);
 
       await user.save();
       return false;
     } else {
-      // Если предложения нет в избранном, добавляем его
       user.favoriteOffers.push(offerObjectId);
 
       await user.save();

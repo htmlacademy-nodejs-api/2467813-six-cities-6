@@ -102,7 +102,7 @@ export class OfferController extends BaseController {
     const userId = tokenPayload?.id;
 
     if (isFavorite && !userId) {
-      throw new HttpError(StatusCodes.UNAUTHORIZED, 'Unauthorized', 'OfferController');
+      throw new HttpError(StatusCodes.UNAUTHORIZED, 'Unauthorized', `${OFFER_CONTROLLER}`);
     }
 
     const offers = await this.offerService.find(count, town, isPremium, isFavorite, userId);

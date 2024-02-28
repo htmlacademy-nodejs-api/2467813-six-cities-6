@@ -9,7 +9,7 @@
     "api",
     "node.js"
   ],
-  "main": "main.js",
+  "main": "main.rest.js",
   "scripts": {
     "start": "npm run build && node ./dist/main.rest.js",
     "build": "npm run clean && npm run compile",

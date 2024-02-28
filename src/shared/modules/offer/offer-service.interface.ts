@@ -17,6 +17,5 @@ export interface IOfferService extends IDocumentExists {
   findById(offerId: string, userId?: string): Promise<DocumentType<OfferEntity> | null>;
   togglerFavorites(userId: string, offerId: string, isFavorite: boolean): Promise<boolean>;
 
-  // Существование документа в базе данных
   exists(documentId: string): Promise<boolean>;
 }

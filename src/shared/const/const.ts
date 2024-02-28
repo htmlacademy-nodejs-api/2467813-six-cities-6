@@ -117,3 +117,8 @@ export const SortTypeMongoDB = {
   Down: -1,
   Up: 1,
 } as const;
+
+export const Retry = {
+  count: 5,
+  timeout: 1000,
+} as const;
