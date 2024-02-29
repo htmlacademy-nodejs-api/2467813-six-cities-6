@@ -15,7 +15,7 @@ export class PathTransformer {
     @inject(Component.Logger) private readonly logger: ILogger,
     @inject(Component.Config) private readonly config: IConfig<TRestSchema>,
   ) {
-    this.logger.info('PathTranformer created!');
+    this.logger.info('PathTransformer created!');
   }
 
   private hasDefaultImage(value: string) {

@@ -15,8 +15,6 @@ export class CommentEntity extends defaultClasses.TimeStamps {
   @prop({
     trim: true,
     required: true,
-    minlength: [5, 'Min length for description path is 5'],
-    maxlength: [1024, 'Max length for description path is 1024'],
   })
   public text: string;
 

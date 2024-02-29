@@ -1,11 +1,11 @@
 import { IsEmail, IsIn, IsString, Length } from 'class-validator';
 import { TUserType } from '../../../types/index.js';
-import { CreateUserMessages } from '../const/index.js';
+import { CreateUserMessages, Name, Password } from '../const/index.js';
 import { UserType } from '../../../const/index.js';
 
 export class CreateUserDto {
   @IsString({ message: CreateUserMessages.name.invalidFormat })
-  @Length(1, 15, { message: CreateUserMessages.name.lengthField })
+  @Length(Name.Min, Name.Max, { message: CreateUserMessages.name.lengthField })
   public name: string;
 
   @IsEmail({}, { message: CreateUserMessages.email.invalidFormat })
@@ -17,6 +17,6 @@ export class CreateUserDto {
   public userType: TUserType;
 
   @IsString({ message: CreateUserMessages.password.invalidFormat })
-  @Length(6, 12, { message: CreateUserMessages.password.lengthField })
+  @Length(Password.Min, Password.Max, { message: CreateUserMessages.password.lengthField })
   public password: string;
 }
