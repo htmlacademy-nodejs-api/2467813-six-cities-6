@@ -19,8 +19,6 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     type: String,
     trim: true,
     required: true,
-    minlength: [10, 'Min length for title path is 10'],
-    maxlength: [100, 'Max length for title path is 100'],
   })
   public title: string;
 
@@ -28,8 +26,6 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     type: String,
     trim: true,
     required: true,
-    minlength: [20, 'Min length for description path is 20'],
-    maxlength: [1024, 'Max length for description path is 1024'],
   })
   public description: string;
 
@@ -105,24 +101,18 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({
     type: Number,
     required: true,
-    min: [1, 'Min length for rooms path is 1'],
-    max: [8, 'Max length for rooms path is 8'],
   })
   public rooms: number;
 
   @prop({
     type: Number,
     required: true,
-    min: [1, 'Min length for guests path is 1'],
-    max: [10, 'Max length for guests path is 10'],
   })
   public guests: number;
 
   @prop({
     type: Number,
     required: true,
-    min: [100, 'Min length for rentalCost path is 100'],
-    max: [100_000, 'Max length for rentalCost path is 100000'],
   })
   public rentalCost: number;
 
