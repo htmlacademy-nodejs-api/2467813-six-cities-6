@@ -3,7 +3,7 @@ import { Ref, defaultClasses, getModelForClass, modelOptions, mongoose, prop } f
 import { TAmenitiesType } from '../../types/amenities.type.js';
 import { TCityType } from '../../types/city.type.js';
 import { THouseType } from '../../types/house.type.js';
-import { CityType, HouseType } from '../../const/index.js';
+import { CityType, HouseType, IMAGE_REX_EXP } from '../../const/index.js';
 import { UserEntity } from '../user/index.js';
 
 export interface OfferEntity extends defaultClasses.Base {}
@@ -57,7 +57,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     type: String,
     required: true,
     trim: true,
-    match: [/\.(jpg|png)(\?.*)?$/i, 'The previewImage image must include an extension.jpg or .png'],
+    match: [IMAGE_REX_EXP, 'The previewImage image must include an extension.jpg or .png'],
   })
   public previewImage: string;
 

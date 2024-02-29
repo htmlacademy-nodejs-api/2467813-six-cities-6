@@ -2,27 +2,7 @@ import dayjs from 'dayjs';
 import { IOfferGenerator } from './offer-generator.interface.js';
 import { TMockServerData } from '../../types/index.js';
 import { generateRandomValue, getRandomItem, getRandomItems } from '../../utils/index.js';
-import { AmenitiesType, CityType, HouseType, UserType } from '../../const/index.js';
-
-const Price = {
-  Min: 100,
-  Max: 100000,
-} as const;
-
-const Rating = {
-  Min: 1,
-  Max: 5,
-} as const;
-
-const Rooms = {
-  Min: 1,
-  Max: 8,
-} as const;
-
-const Guests = {
-  Min: 1,
-  Max: 10,
-} as const;
+import { AmenitiesType, CityType, Guests, HouseType, Price, Rating, Rooms, UserType } from '../../const/index.js';
 
 const WeekDay = {
   First: 1,

@@ -2,6 +2,7 @@ export const DECIMAL_SYSTEM = 10;
 export const TRUE = 'true';
 export const FUNCTION = 'function';
 export const LOG_FILE_PATH = 'logs/rest.log';
+export const IMAGE_REX_EXP = /\.(jpg|png)(\?.*)?$/i;
 
 export const StaticPath = {
   Upload: '/upload',
@@ -91,4 +92,24 @@ export const SortTypeMongoDB = {
 export const Retry = {
   count: 5,
   timeout: 1000,
+} as const;
+
+export const Rating = {
+  Min: 1,
+  Max: 5,
+} as const;
+
+export const Rooms = {
+  Min: 1,
+  Max: 8,
+} as const;
+
+export const Guests = {
+  Min: 1,
+  Max: 10,
+} as const;
+
+export const Price = {
+  Min: 100,
+  Max: 100_000,
 } as const;
