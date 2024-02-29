@@ -2,6 +2,7 @@ export const DECIMAL_SYSTEM = 10;
 export const TRUE = 'true';
 export const FUNCTION = 'function';
 export const LOG_FILE_PATH = 'logs/rest.log';
+export const IMAGE_REX_EXP = /\.(jpg|png)(\?.*)?$/i;
 
 export const StaticPath = {
   Upload: '/upload',
@@ -52,8 +53,6 @@ export const HttpMethod = {
   Put: 'put',
 } as const;
 
-export const RouteApp = {} as const;
-
 export const AmenitiesType = {
   Breakfast: 'Breakfast',
   'Air conditioning': 'Air conditioning',
@@ -85,42 +84,6 @@ export const UserType = {
   pro: 'pro',
 } as const;
 
-export const GeographicalCoordinates = {
-  Paris: '48.85661;2.351499',
-  Cologne: '50.938361;6.959974',
-  Brussels: '50.846557;4.351697',
-  Amsterdam: '52.370216;4.895168',
-  Hamburg: '53.550341;10.000654',
-  Dusseldorf: '51.225402;6.776314',
-} as const;
-
-export const ListCities = [
-  {
-    name: CityType.Paris,
-    coordinates: GeographicalCoordinates.Paris,
-  },
-  {
-    name: CityType.Cologne,
-    coordinates: GeographicalCoordinates.Cologne,
-  },
-  {
-    name: CityType.Brussels,
-    coordinates: GeographicalCoordinates.Brussels,
-  },
-  {
-    name: CityType.Hamburg,
-    coordinates: GeographicalCoordinates.Hamburg,
-  },
-  {
-    name: CityType.Amsterdam,
-    coordinates: GeographicalCoordinates.Amsterdam,
-  },
-  {
-    name: CityType.Dusseldorf,
-    coordinates: GeographicalCoordinates.Dusseldorf,
-  },
-] as const;
-
 export const SortTypeMongoDB = {
   Down: -1,
   Up: 1,
@@ -129,4 +92,24 @@ export const SortTypeMongoDB = {
 export const Retry = {
   count: 5,
   timeout: 1000,
+} as const;
+
+export const Rating = {
+  Min: 1,
+  Max: 5,
+} as const;
+
+export const Rooms = {
+  Min: 1,
+  Max: 8,
+} as const;
+
+export const Guests = {
+  Min: 1,
+  Max: 10,
+} as const;
+
+export const Price = {
+  Min: 100,
+  Max: 100_000,
 } as const;
